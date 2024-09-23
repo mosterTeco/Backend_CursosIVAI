@@ -40,6 +40,20 @@ public class App
 
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
 
+        //Registrar Curso (Administrador)
+        post("/Registro", (request,response) -> {
+            response.type("application/json");
+            String payload = request.body();
+            try {
+
+                HashMap<String, String> respuestaJson = new HashMap<>();
+                return gson.toJson(respuestaJson);
+
+            } catch (Exception e){
+                response.status(500);
+            }
+        });
+
         post("/validacion", (request, response) -> {
             response.type("application/json");
             String payload = request.body();
