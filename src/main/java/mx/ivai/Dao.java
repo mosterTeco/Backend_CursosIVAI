@@ -7,6 +7,10 @@ import javax.swing.plaf.nimbus.State;
 
 import java.sql.*;
 
+import Pojo.Registro;
+
+
+
 public class Dao {
 
     private static Conexion c = new Conexion();
@@ -152,9 +156,4 @@ public class Dao {
         }
         return msj;
     }
-
-    // !METODO PARA AGREGAR NUEVOS CURSOS
-    
-
-
 }
