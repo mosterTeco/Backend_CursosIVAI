@@ -1,16 +1,13 @@
 package mx.ivai;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
+import mx.ivai.POJO.Registro;
+import mx.ivai.POJO.Usuario;
 
 import static spark.Spark.*;
 
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * Hello world!
@@ -81,6 +78,18 @@ public class App
                 return gson.toJson(errorJson);
             }
         });
+
+        post("/registro", (request, response) -> {
+            response.type("application/json");
+            String payload = request.body();
+            Registro registro = gson.fromJson(payload, Registro.class);
+            System.out.println("payload " + payload);
+            String respuesta = "";
+            // String respuesta = Dao.crearRegistro(registro);
+            return respuesta;
+        });
+
+        
 
 
         System.out.println( "Hello World!!!!!!!!!!" );

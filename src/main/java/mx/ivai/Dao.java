@@ -2,8 +2,9 @@ package mx.ivai;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.plaf.nimbus.State;
+
+import mx.ivai.POJO.Usuario;
 
 import java.sql.*;
 
