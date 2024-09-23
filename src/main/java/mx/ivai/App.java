@@ -67,6 +67,17 @@ public class App
             }
         });
 
+        post("/registro", (request, response) -> {
+            response.type("application/json");
+            String payload = request.body();
+            Registro registro = gson.fromJson(payload, Registro.class);
+            System.out.println("payload " + payload);
+            String respuesta = Dao.crearRegistro(registro);
+            return respuesta;
+        });
+
+        
+
 
         System.out.println( "Hello World!!!!!!!!!!" );
     }
