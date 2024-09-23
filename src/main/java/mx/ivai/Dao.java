@@ -54,6 +54,11 @@ public class Dao {
         return usuario;
     }
 
+    //Registrar Curso
+    public static boolean RegistrarCurso(String NombreCurso, String Fecha, String Hora, String Imparte, int Cupo, String EstatusCurso, String Lugar, String CorreoSeguimiento, String TipoCurso, String Curso){
+        return true;
+    }
+
     // !METODO PARA VALIDAR QUE EL USUARIO ESTÁ REGISTRADO
     public static boolean usuarioRegistrado(String email, String contrasena) {
         boolean respuesta = false;

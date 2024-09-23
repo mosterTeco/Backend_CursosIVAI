@@ -52,6 +52,7 @@ public class App
             } catch (Exception e){
                 response.status(500);
             }
+            return request;
         });
 
         post("/validacion", (request, response) -> {
