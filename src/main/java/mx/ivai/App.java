@@ -1,16 +1,13 @@
 package mx.ivai;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
+import mx.ivai.POJO.Registro;
+import mx.ivai.POJO.Usuario;
 
 import static spark.Spark.*;
 
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * Hello world!
@@ -40,22 +37,37 @@ public class App
 
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
 
+        //Registrar Curso (Administrador)
+        post("/Registro", (request,response) -> {
+            response.type("application/json");
+            String payload = request.body();
+            try {
+
+                HashMap<String, String> respuestaJson = new HashMap<>();
+                return gson.toJson(respuestaJson);
+
+            } catch (Exception e){
+                response.status(500);
+            }
+            return request;
+        });
+
         post("/validacion", (request, response) -> {
             response.type("application/json");
             String payload = request.body();
             
             try {
-                
                 Usuario usuario = gson.fromJson(payload, Usuario.class);
                 System.out.println("Usuario: " + usuario.getUsuario());
+                System.out.println("Contrasenia: " + usuario.getPassword());
                 
                 boolean respuesta = Dao.usuarioRegistrado(usuario.getUsuario(), usuario.getPassword());
         
                 String mensaje = respuesta ? "Usuario correcto" : "Usuario incorrecto";
-    
+        
                 HashMap<String, String> respuestaJson = new HashMap<>();
                 respuestaJson.put("mensaje", mensaje);
-    
+        
                 return gson.toJson(respuestaJson);
         
             } catch (Exception e) {
@@ -72,13 +84,10 @@ public class App
             String payload = request.body();
             Registro registro = gson.fromJson(payload, Registro.class);
             System.out.println("payload " + payload);
-            String respuesta = Dao.crearRegistro(registro);
+            String respuesta = "";
+            // String respuesta = Dao.crearRegistro(registro);
             return respuesta;
         });
-
-        
-
-
         System.out.println( "Hello World!!!!!!!!!!" );
     }
 }

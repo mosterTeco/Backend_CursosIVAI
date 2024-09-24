@@ -1,4 +1,4 @@
-package mx.ivai;
+package mx.ivai.POJO;
 
 public class Usuario {
     private int idUsuario;

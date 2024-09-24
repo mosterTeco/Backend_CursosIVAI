@@ -7,9 +7,7 @@ import javax.swing.plaf.nimbus.State;
 
 import java.sql.*;
 
-import Pojo.Registro;
-
-
+import mx.ivai.POJO.*;
 
 public class Dao {
 
