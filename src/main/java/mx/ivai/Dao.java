@@ -56,7 +56,18 @@ public class Dao {
     }
 
     //Registrar Curso
-    public static boolean RegistrarCurso(String NombreCurso, String Fecha, String Hora, String Imparte, int Cupo, String EstatusCurso, String Lugar, String CorreoSeguimiento, String TipoCurso, String Curso){
+    public static boolean RegistrarCurso(String NombreCurso, String Fecha, String Hora, String Imparte, int Cupo, String EstatusCurso, String Lugar, String CorreoSeguimiento, String TipoCurso, String Curso, String ValorCurricular){
+        boolean respuesta = false;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try{
+            conn = c.getConnection(); 
+            String query = "SELECT Usuario, Pass FROM Usuario WHERE Usuario = ? AND Pass = ?";
+            ps = conn.prepareStatement(query);
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
         return true;
     }
 
