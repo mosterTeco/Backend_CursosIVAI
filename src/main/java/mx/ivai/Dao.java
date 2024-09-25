@@ -137,7 +137,7 @@ public class Dao {
                 msj = "usuario no agregado";
         } catch (Exception e) {
             System.out.println(e);
-        } finally{
+        } finally {
             if (stm != null) {
                 try {
                     stm.close();
@@ -148,6 +148,67 @@ public class Dao {
             }
             try {
                 conn.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return msj;
+    }
+
+    // Método para registrar un curso en la base de datos
+    public static String registrarCurso(Cursos curso) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        String msj = "";
+
+        conn = c.getConnection(); 
+
+        try {
+            String sql = "INSERT INTO Curso (NombreCurso, Fecha, Hora, Imparte, Cupo, EstatusCupo, EstatusCurso, Observaciones, Lugar, CorreoSeguimiento, Programa, Archivo, Tipo, Curso, ValorCurricular, FechaLetra) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            stm = conn.prepareStatement(sql);
+
+            // Asignación de valores a los parámetros
+            stm.setString(1, curso.getNombreCurso());
+            stm.setTimestamp(2, java.sql.Timestamp.valueOf(curso.getFecha())); // Conversión de LocalDateTime a
+                                                                               // Timestamp
+            stm.setString(3, curso.getHora());
+            stm.setString(4, curso.getImparte());
+            stm.setInt(5, curso.getCupo());
+            stm.setString(6, curso.getEstatusCupo());
+            stm.setString(7, curso.getEstatusCurso());
+            stm.setString(8, curso.getObservaciones());
+            stm.setString(9, curso.getLugar());
+            stm.setString(10, curso.getCorreoSeguimiento());
+            stm.setString(11, curso.getPrograma());
+            stm.setString(12, curso.getArchivo());
+            stm.setString(13, curso.getTipo());
+            stm.setString(14, curso.getCurso());
+            stm.setString(15, curso.getValorCurricular());
+            stm.setString(16, curso.getFechaLetra());
+
+            if (stm.executeUpdate() > 0)
+                msj = "Curso registrado con exito";
+            else
+                msj = "Error al registrar el curso";
+
+        } catch (Exception e) {
+            System.out.println(e);
+            msj = "Error: " + e.getMessage();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+                stm = null;
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (Exception e) {
                 System.out.println(e);
             }

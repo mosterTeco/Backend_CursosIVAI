@@ -1,12 +1,14 @@
-package mx.ivai;
+package mx.ivai.POJO;
+
+import java.time.LocalDateTime;
 
 public class Cursos {
     private int idCurso;
     private String nombreCurso;
-    private String fecha;
+    private LocalDateTime fecha;  
     private String hora;
     private String imparte;
-    private Integer cupo;
+    private Integer cupo;  
     private String estatusCupo;
     private String estatusCurso;
     private String observaciones;
@@ -19,12 +21,12 @@ public class Cursos {
     private String valorCurricular;
     private String fechaLetra;
 
-    public Cursos(int idCurso, String nombreCurso, String fecha, String hora, String imparte, Integer cupo,
+    public Cursos(int idCurso, String nombreCurso, LocalDateTime fecha, String hora, String imparte, Integer cupo,
             String estatusCupo, String estatusCurso, String observaciones, String lugar, String correoSeguimiento,
             String programa, String archivo, String tipo, String curso, String valorCurricular, String fechaLetra) {
         this.idCurso = idCurso;
         this.nombreCurso = nombreCurso;
-        this.fecha = fecha;
+        this.fecha = fecha;  
         this.hora = hora;
         this.imparte = imparte;
         this.cupo = cupo;
@@ -57,11 +59,11 @@ public class Cursos {
         this.nombreCurso = nombreCurso;
     }
 
-    public String getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 
