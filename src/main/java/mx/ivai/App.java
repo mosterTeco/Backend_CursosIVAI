@@ -9,6 +9,7 @@ import mx.ivai.POJO.Cursos;
 import static spark.Spark.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -103,6 +104,17 @@ public class App {
             respuesta.put("mensaje", mensaje);
 
             return gson.toJson(respuesta);
+        });
+
+        post("/estado", (request, response) -> {
+            response.type("application/json");
+
+            List<String> estados = Dao.obtenerEstados();
+
+            Gson gson = new Gson();
+            String jsonEstados = gson.toJson(estados);
+
+            return jsonEstados; 
         });
 
         System.out.println("Hello World!!!!!!!!!!");
