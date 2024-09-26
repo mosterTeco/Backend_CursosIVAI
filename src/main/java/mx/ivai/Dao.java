@@ -2,11 +2,12 @@ package mx.ivai;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.plaf.nimbus.State;
 
-import mx.ivai.POJO.Usuario;
-
 import java.sql.*;
+
+import mx.ivai.POJO.*;
 
 public class Dao {
 
@@ -55,22 +56,6 @@ public class Dao {
         return usuario;
     }
 
-    //Registrar Curso
-    public static boolean RegistrarCurso(String NombreCurso, String Fecha, String Hora, String Imparte, int Cupo, String EstatusCurso, String Lugar, String CorreoSeguimiento, String TipoCurso, String Curso, String ValorCurricular){
-        boolean respuesta = false;
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try{
-            conn = c.getConnection(); 
-            String query = "SELECT Usuario, Pass FROM Usuario WHERE Usuario = ? AND Pass = ?";
-            ps = conn.prepareStatement(query);
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
-        }
-        return true;
-    }
-
     // !METODO PARA VALIDAR QUE EL USUARIO ESTÁ REGISTRADO
     public static boolean usuarioRegistrado(String email, String contrasena) {
         boolean respuesta = false;
@@ -79,7 +64,7 @@ public class Dao {
         ResultSet rs = null;
 
         try {
-            conn = c.getConnection(); 
+            conn = c.getConnection();
             String query = "SELECT Usuario, Pass FROM Usuario WHERE Usuario = ? AND Pass = ?";
             ps = conn.prepareStatement(query);
             ps.setString(1, email);
@@ -88,12 +73,12 @@ public class Dao {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                respuesta = true; 
+                respuesta = true;
             }
 
         } catch (Exception ex) {
             System.out.println("Error al iniciar sesión: " + ex.toString());
-            ex.printStackTrace(); 
+            ex.printStackTrace();
 
         } finally {
             try {
@@ -111,4 +96,225 @@ public class Dao {
         return respuesta;
     }
 
+    // !METODO PARA AGREGAR NUEVOS USUARIOS A LA TABLA DE REGISTRO
+    public static String crearRegistro(Registro reg) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        String msj = "";
+
+        conn = c.getConnection();
+
+        try {
+            String sql = "INSERT INTO Registro (ClaveRegistro, Nombre, Apellidos, SO, Telefono, Correo, IdCurso, Opcional, Procedencia, GradoEstudios, OrdenGobierno, Area, Cargo, TitularUA, Comite, Sexo, Estado, Asistio, Otra1, Otra2, InforEventos, Inter) "
+                    +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            stm.setString(1, reg.getClaveRegistro());
+            stm.setString(2, reg.getNombre());
+            stm.setString(3, reg.getApellidos());
+            stm.setString(4, reg.getSo());
+            stm.setString(5, reg.getTelefono());
+            stm.setString(6, reg.getCorreo());
+            stm.setInt(7, reg.getIdCurso());
+            stm.setString(8, reg.getOpcional());
+            stm.setString(9, reg.getProcedencia());
+            stm.setString(10, reg.getGradoEstudios());
+            stm.setString(11, reg.getOrdenGobierno());
+            stm.setString(12, reg.getArea());
+            stm.setString(13, reg.getCargo());
+            stm.setString(14, reg.getTitularUA());
+            stm.setString(15, reg.getComite());
+            stm.setString(16, reg.getSexo());
+            stm.setString(17, reg.getEstado());
+            stm.setString(18, reg.getAsistio());
+            stm.setString(19, reg.getOtra1());
+            stm.setString(20, reg.getOtra2());
+            stm.setString(21, reg.getInforEventos());
+            stm.setString(22, reg.getInter());
+
+            if (stm.executeUpdate() > 0)
+                msj = "usuario agregado";
+            else
+                msj = "usuario no agregado";
+        } catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+                stm = null;
+            }
+            try {
+                conn.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return msj;
+    }
+
+    // Método para obtener el listado de cursos que se pueden impartir
+    public static ArrayList<String> obtenerTiposCurso() {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        String tipo = "";
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<String> TiposCurso = new ArrayList<String>();
+
+        conn = c.getConnection();
+        
+        try {
+            
+            String query = "SELECT Tipo FROM TIPOCURSO";
+            ps = conn.prepareStatement(query);
+
+            rs = ps.executeQuery();
+
+            while(rs.next()){
+                tipo = rs.getString("tipo");
+                TiposCurso.add(tipo);
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Error al iniciar sesión: " + ex.toString());
+            ex.printStackTrace();
+
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
+        return TiposCurso;
+
+    }
+
+    // Método para obtener los cursos registrados en la base de datos
+    public static ArrayList<Cursos> obtenerCursos() {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Cursos> cursos = new ArrayList<Cursos>();
+        
+        conn = c.getConnection();
+        
+        try {
+            
+            String query = "SELECT * FROM Curso";
+            ps = conn.prepareStatement(query);
+            
+            rs = ps.executeQuery();
+            
+            while(rs.next()){
+                Cursos curso = new Cursos();
+                curso.setIdCurso(rs.getInt("IdCurso"));
+                curso.setNombreCurso(rs.getString("NombreCurso"));
+                curso.setFecha(rs.getString("Fecha"));
+                curso.setHora(rs.getString("Hora"));
+                curso.setImparte(rs.getString("Imparte"));
+                curso.setCupo(rs.getInt("Cupo"));
+                curso.setEstatusCupo(rs.getString("EstatusCupo"));
+                curso.setEstatusCurso(rs.getString("EstatusCurso"));
+                curso.setObservaciones(rs.getString("Observaciones"));
+                curso.setLugar(rs.getString("Lugar"));
+                curso.setCorreoSeguimiento(rs.getString("CorreoSeguimiento"));
+                curso.setPrograma(rs.getString("Programa"));
+                curso.setArchivo(rs.getString("Archivo"));
+                curso.setTipo(rs.getString("Tipo"));
+                curso.setCurso(rs.getString("Curso"));
+                curso.setValorCurricular(rs.getString("ValorCurricular"));
+                curso.setFechaLetra(rs.getString("FechaLetra"));
+                cursos.add(curso);
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Error al obtener los registros de la tabla cursos: " + ex.toString());
+            ex.printStackTrace();
+
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
+        return cursos;
+
+    }
+
+    // Método para registrar un curso en la base de datos
+    public static String registrarCurso(Cursos curso) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        String msj = "";
+
+        conn = c.getConnection(); 
+
+        try {
+            String sql = "INSERT INTO Curso (NombreCurso, Fecha, Hora, Imparte, Cupo, EstatusCupo, EstatusCurso, Observaciones, Lugar, CorreoSeguimiento, Programa, Archivo, Tipo, Curso, ValorCurricular, FechaLetra) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'cursos.ivai@gmail.com', ?, ?, ?, ?, ?, ?)";
+
+            stm = conn.prepareStatement(sql);
+
+            // Asignación de valores a los parámetros
+            stm.setString(1, curso.getNombreCurso());
+            stm.setString(2, curso.getFecha()); // Conversión de LocalDateTime a Timestamp
+            stm.setString(3, curso.getHora());
+            stm.setString(4, curso.getImparte());
+            stm.setInt(5, curso.getCupo());
+            stm.setString(6, curso.getEstatusCupo());
+            stm.setString(7, curso.getEstatusCurso());
+            stm.setString(8, curso.getObservaciones());
+            stm.setString(9, curso.getLugar());
+            stm.setString(10, curso.getPrograma());
+            stm.setString(11, curso.getArchivo());
+            stm.setString(12, curso.getTipo());
+            stm.setString(13, curso.getCurso());
+            stm.setString(14, curso.getValorCurricular());
+            stm.setString(15, curso.getFechaLetra());
+
+            if (stm.executeUpdate() > 0)
+                msj = "Curso registrado con exito";
+            else
+                msj = "Error al registrar el curso";
+
+        } catch (Exception e) {
+            System.out.println(e);
+            msj = "Error: " + e.getMessage();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+                stm = null;
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return msj;
+    }
 }

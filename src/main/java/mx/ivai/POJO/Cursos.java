@@ -1,12 +1,14 @@
-package mx.ivai;
+package mx.ivai.POJO;
+
+import java.time.LocalDateTime;
 
 public class Cursos {
     private int idCurso;
     private String nombreCurso;
-    private String fecha;
+    private String fecha;  
     private String hora;
     private String imparte;
-    private Integer cupo;
+    private int cupo;  
     private String estatusCupo;
     private String estatusCurso;
     private String observaciones;
@@ -19,12 +21,17 @@ public class Cursos {
     private String valorCurricular;
     private String fechaLetra;
 
+    
+
+    public Cursos() {
+    }
+
     public Cursos(int idCurso, String nombreCurso, String fecha, String hora, String imparte, Integer cupo,
             String estatusCupo, String estatusCurso, String observaciones, String lugar, String correoSeguimiento,
             String programa, String archivo, String tipo, String curso, String valorCurricular, String fechaLetra) {
         this.idCurso = idCurso;
         this.nombreCurso = nombreCurso;
-        this.fecha = fecha;
+        this.fecha = fecha;  
         this.hora = hora;
         this.imparte = imparte;
         this.cupo = cupo;
@@ -176,5 +183,16 @@ public class Cursos {
     public void setFechaLetra(String fechaLetra) {
         this.fechaLetra = fechaLetra;
     }
+
+    @Override
+    public String toString() {
+        return "Cursos [idCurso=" + idCurso + ", nombreCurso=" + nombreCurso + ", fecha=" + fecha + ", hora=" + hora
+                + ", imparte=" + imparte + ", cupo=" + cupo + ", estatusCupo=" + estatusCupo + ", estatusCurso="
+                + estatusCurso + ", observaciones=" + observaciones + ", lugar=" + lugar + ", correoSeguimiento="
+                + correoSeguimiento + ", programa=" + programa + ", archivo=" + archivo + ", tipo=" + tipo + ", curso="
+                + curso + ", valorCurricular=" + valorCurricular + ", fechaLetra=" + fechaLetra + "]";
+    }
+
+    
     
 }
