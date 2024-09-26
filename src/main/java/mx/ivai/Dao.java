@@ -265,7 +265,7 @@ public class Dao {
         Connection conn = null;
         String msj = "";
 
-        conn = c.getConnection(); 
+        conn = c.getConnection();
 
         try {
             String sql = "INSERT INTO Curso (NombreCurso, Fecha, Hora, Imparte, Cupo, EstatusCupo, EstatusCurso, Observaciones, Lugar, CorreoSeguimiento, Programa, Archivo, Tipo, Curso, ValorCurricular, FechaLetra) "
@@ -317,4 +317,42 @@ public class Dao {
         }
         return msj;
     }
+
+    // Método que retorna todos los estados
+    public static List<String> obtenerEstados() {
+        List<String> estados = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = c.getConnection();
+            String query = "SELECT Estado FROM Estados";
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                estados.add(rs.getString("Estado"));
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Error al obtener los estados: " + ex.toString());
+            ex.printStackTrace();
+
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
+        return estados;
+    }
+    
 }
