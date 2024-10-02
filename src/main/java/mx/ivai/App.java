@@ -9,6 +9,7 @@ import mx.ivai.POJO.Cursos;
 import static spark.Spark.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +114,25 @@ public class App {
             Gson gson = new Gson();
             String jsonEstados = gson.toJson(estados);
 
-            return jsonEstados; 
+            return jsonEstados;
+        });
+
+        put("/actualizar", (request, response) -> {
+            response.type("application/json");
+            String fecha = request.queryParams("Fecha");
+            System.out.println(fecha);
+
+            String body = request.body();
+
+            System.out.println("Datos recibidos en el backend: " + body);
+
+            Gson gson = new Gson();
+            
+            Cursos curso = gson.fromJson(body, Cursos.class);
+
+            String resultado = Dao.editarCurso(curso);
+
+            return gson.toJson(Collections.singletonMap("mensaje", resultado));
         });
 
         System.out.println("Hello World!!!!!!!!!!");

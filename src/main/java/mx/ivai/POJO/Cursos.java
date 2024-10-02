@@ -2,26 +2,39 @@ package mx.ivai.POJO;
 
 import java.time.LocalDateTime;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Cursos {
     private int idCurso;
     private String nombreCurso;
     private String fecha;  
     private String hora;
     private String imparte;
-    private int cupo;  
+
+    private int cupo;
+
     private String estatusCupo;
+
     private String estatusCurso;
+
     private String observaciones;
+
     private String lugar;
+
     private String correoSeguimiento;
+
     private String programa;
     private String archivo;
+
+  
     private String tipo;
+
+  
     private String curso;
+
+  
     private String valorCurricular;
     private String fechaLetra;
-
-    
 
     public Cursos() {
     }

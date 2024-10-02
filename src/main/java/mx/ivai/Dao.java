@@ -355,6 +355,59 @@ public class Dao {
         return estados;
     }
 
-   
-        
+    
+    public static String editarCurso(Cursos curso) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        String msj = "";
+    
+        conn = c.getConnection();
+    
+        try {
+            String sql = "UPDATE Curso SET Fecha = ?, Hora = ?, Imparte = ?, EstatusCupo = ?, EstatusCurso = ?, "
+                       + " Lugar = ?, CorreoSeguimiento = ?, Tipo = ?, Curso = ?, ValorCurricular = ? "
+                       + "WHERE IdCurso = ?";
+    
+            stm = conn.prepareStatement(sql);
+
+            stm.setString(1, curso.getFecha());
+            stm.setString(2, curso.getHora());
+            stm.setString(3, curso.getImparte());
+            stm.setString(4, curso.getEstatusCupo());
+            stm.setString(5, curso.getEstatusCurso());
+            stm.setString(  6, curso.getLugar());
+            stm.setString(7, curso.getCorreoSeguimiento());
+            stm.setString(8, curso.getTipo());
+            stm.setString(9, curso.getCurso());
+            stm.setString(10, curso.getValorCurricular());
+            stm.setInt(11, curso.getIdCurso());
+    
+            if (stm.executeUpdate() > 0) {
+                msj = "Curso actualizado con éxito";
+            } else {
+                msj = "No se pudo actualizar el curso";
+            }
+    
+        } catch (Exception e) {
+            System.out.println(e);
+            msj = "Error: " + e.getMessage();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        System.out.println("Datos recibidos: " + curso);
+        return msj;
+    } 
 }
