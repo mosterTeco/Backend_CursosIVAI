@@ -6,6 +6,9 @@ import java.util.List;
 import javax.swing.plaf.nimbus.State;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import mx.ivai.POJO.*;
 
@@ -101,40 +104,38 @@ public class Dao {
         PreparedStatement stm = null;
         Connection conn = null;
         String msj = "";
+        LocalDateTime fecha = LocalDateTime.now();
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String fechaFormateada = fecha.format(formato);
 
         conn = c.getConnection();
 
         try {
-            String sql = "INSERT INTO Registro (ClaveRegistro, Nombre, Apellidos, SO, Telefono, Correo, IdCurso, Opcional, Procedencia, GradoEstudios, OrdenGobierno, Area, Cargo, TitularUA, Comite, Sexo, Estado, Asistio, Otra1, Otra2, InforEventos, Inter) "
+            String sql = "INSERT INTO Registro ( Nombre, Apellidos, SO, Telefono, Correo, IdCurso, Procedencia, GradoEstudios, OrdenGobierno, Area, Cargo, Genero, Estado, Fecha, InfoEventos, Interprete) "
                     +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            stm.setString(1, reg.getClaveRegistro());
-            stm.setString(2, reg.getNombre());
-            stm.setString(3, reg.getApellidos());
-            stm.setString(4, reg.getSo());
-            stm.setString(5, reg.getTelefono());
-            stm.setString(6, reg.getCorreo());
-            stm.setInt(7, reg.getIdCurso());
-            stm.setString(8, reg.getOpcional());
-            stm.setString(9, reg.getProcedencia());
-            stm.setString(10, reg.getGradoEstudios());
-            stm.setString(11, reg.getOrdenGobierno());
-            stm.setString(12, reg.getArea());
-            stm.setString(13, reg.getCargo());
-            stm.setString(14, reg.getTitularUA());
-            stm.setString(15, reg.getComite());
-            stm.setString(16, reg.getSexo());
-            stm.setString(17, reg.getEstado());
-            stm.setString(18, reg.getAsistio());
-            stm.setString(19, reg.getOtra1());
-            stm.setString(20, reg.getOtra2());
-            stm.setString(21, reg.getInforEventos());
-            stm.setString(22, reg.getInter());
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            stm = conn.prepareStatement(sql);
+            stm.setString(1, reg.getNombre());
+            stm.setString(2, reg.getApellidos());
+            stm.setString(3, reg.getSo());
+            stm.setString(4, reg.getTelefono());
+            stm.setString(5, reg.getCorreo());
+            stm.setInt(6, reg.getIdCurso());
+            stm.setString(7, reg.getLugarDeProcedencia());
+            stm.setString(8, reg.getGradoDeEstudios());
+            stm.setString(9, reg.getOrden());
+            stm.setString(10, reg.getAreaAdquisicion());
+            stm.setString(11, reg.getCargoPublico());
+            stm.setString(12, reg.getGenero());
+            stm.setString(13, reg.getEstado());
+            stm.setString(14, fechaFormateada);
+            stm.setString(15, reg.getRecibirInformacion());
+            stm.setString(16, reg.getInterprete());
 
             if (stm.executeUpdate() > 0)
-                msj = "usuario agregado";
+                msj = "Registro Correcto";
             else
-                msj = "usuario no agregado";
+                msj = "No se ha podifo completar el registro";
         } catch (Exception e) {
             System.out.println(e);
         } finally {
@@ -165,15 +166,15 @@ public class Dao {
         ArrayList<String> TiposCurso = new ArrayList<String>();
 
         conn = c.getConnection();
-        
+
         try {
-            
+
             String query = "SELECT Tipo FROM TIPOCURSO";
             ps = conn.prepareStatement(query);
 
             rs = ps.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
                 tipo = rs.getString("tipo");
                 TiposCurso.add(tipo);
             }
@@ -206,17 +207,17 @@ public class Dao {
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<Cursos> cursos = new ArrayList<Cursos>();
-        
+
         conn = c.getConnection();
-        
+
         try {
-            
+
             String query = "SELECT * FROM Curso";
             ps = conn.prepareStatement(query);
-            
+
             rs = ps.executeQuery();
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 Cursos curso = new Cursos();
                 curso.setIdCurso(rs.getInt("IdCurso"));
                 curso.setNombreCurso(rs.getString("NombreCurso"));
@@ -224,17 +225,13 @@ public class Dao {
                 curso.setHora(rs.getString("Hora"));
                 curso.setImparte(rs.getString("Imparte"));
                 curso.setCupo(rs.getInt("Cupo"));
-                curso.setEstatusCupo(rs.getString("EstatusCupo"));
+                curso.setEstatusCupo(rs.getInt("EstatusCupo"));
                 curso.setEstatusCurso(rs.getString("EstatusCurso"));
-                curso.setObservaciones(rs.getString("Observaciones"));
                 curso.setLugar(rs.getString("Lugar"));
                 curso.setCorreoSeguimiento(rs.getString("CorreoSeguimiento"));
-                curso.setPrograma(rs.getString("Programa"));
-                curso.setArchivo(rs.getString("Archivo"));
                 curso.setTipo(rs.getString("Tipo"));
                 curso.setCurso(rs.getString("Curso"));
                 curso.setValorCurricular(rs.getString("ValorCurricular"));
-                curso.setFechaLetra(rs.getString("FechaLetra"));
                 cursos.add(curso);
             }
 
@@ -268,8 +265,8 @@ public class Dao {
         conn = c.getConnection();
 
         try {
-            String sql = "INSERT INTO Curso (NombreCurso, Fecha, Hora, Imparte, Cupo, EstatusCupo, EstatusCurso, Observaciones, Lugar, CorreoSeguimiento, Programa, Archivo, Tipo, Curso, ValorCurricular, FechaLetra) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'cursos.ivai@gmail.com', ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO Curso (NombreCurso, Fecha, Hora, Imparte, Cupo, EstatusCupo, EstatusCurso, Lugar, CorreoSeguimiento, Tipo, Curso, LigaTeams, ValorCurricular) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'cursos.ivai@gmail.com', ?, ?, ?, ? )";
 
             stm = conn.prepareStatement(sql);
 
@@ -279,16 +276,13 @@ public class Dao {
             stm.setString(3, curso.getHora());
             stm.setString(4, curso.getImparte());
             stm.setInt(5, curso.getCupo());
-            stm.setString(6, curso.getEstatusCupo());
+            stm.setInt(6, curso.getEstatusCupo());
             stm.setString(7, curso.getEstatusCurso());
-            stm.setString(8, curso.getObservaciones());
-            stm.setString(9, curso.getLugar());
-            stm.setString(10, curso.getPrograma());
-            stm.setString(11, curso.getArchivo());
-            stm.setString(12, curso.getTipo());
-            stm.setString(13, curso.getCurso());
-            stm.setString(14, curso.getValorCurricular());
-            stm.setString(15, curso.getFechaLetra());
+            stm.setString(8, curso.getLugar());
+            stm.setString(9, curso.getTipo());
+            stm.setString(10, curso.getCurso());
+            stm.setString(11, curso.getLigaTeams());
+            stm.setString(12, curso.getValorCurricular());
 
             if (stm.executeUpdate() > 0)
                 msj = "Curso registrado con exito";
@@ -355,6 +349,4 @@ public class Dao {
         return estados;
     }
 
-   
-        
 }

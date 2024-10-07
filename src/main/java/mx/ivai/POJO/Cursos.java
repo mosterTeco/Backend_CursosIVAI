@@ -1,7 +1,5 @@
 package mx.ivai.POJO;
 
-import java.time.LocalDateTime;
-
 public class Cursos {
     private int idCurso;
     private String nombreCurso;
@@ -9,44 +7,41 @@ public class Cursos {
     private String hora;
     private String imparte;
     private int cupo;  
-    private String estatusCupo;
+    private int estatusCupo;
     private String estatusCurso;
-    private String observaciones;
     private String lugar;
     private String correoSeguimiento;
-    private String programa;
-    private String archivo;
     private String tipo;
     private String curso;
+    private String ligaTeams;
     private String valorCurricular;
-    private String fechaLetra;
 
     
 
     public Cursos() {
     }
 
-    public Cursos(int idCurso, String nombreCurso, String fecha, String hora, String imparte, Integer cupo,
-            String estatusCupo, String estatusCurso, String observaciones, String lugar, String correoSeguimiento,
-            String programa, String archivo, String tipo, String curso, String valorCurricular, String fechaLetra) {
+
+    public Cursos(int idCurso, String nombreCurso, String fecha, String hora, String imparte, int cupo, int estatusCupo,
+            String estatusCurso, String lugar, String correoSeguimiento, String tipo, String curso, String ligaTeams,
+            String valorCurricular) {
         this.idCurso = idCurso;
         this.nombreCurso = nombreCurso;
-        this.fecha = fecha;  
+        this.fecha = fecha;
         this.hora = hora;
         this.imparte = imparte;
         this.cupo = cupo;
         this.estatusCupo = estatusCupo;
         this.estatusCurso = estatusCurso;
-        this.observaciones = observaciones;
         this.lugar = lugar;
         this.correoSeguimiento = correoSeguimiento;
-        this.programa = programa;
-        this.archivo = archivo;
         this.tipo = tipo;
         this.curso = curso;
+        this.ligaTeams = ligaTeams;
         this.valorCurricular = valorCurricular;
-        this.fechaLetra = fechaLetra;
     }
+
+
 
     public int getIdCurso() {
         return idCurso;
@@ -96,28 +91,12 @@ public class Cursos {
         this.cupo = cupo;
     }
 
-    public String getEstatusCupo() {
-        return estatusCupo;
-    }
-
-    public void setEstatusCupo(String estatusCupo) {
-        this.estatusCupo = estatusCupo;
-    }
-
     public String getEstatusCurso() {
         return estatusCurso;
     }
 
     public void setEstatusCurso(String estatusCurso) {
         this.estatusCurso = estatusCurso;
-    }
-
-    public String getObservaciones() {
-        return observaciones;
-    }
-
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
     }
 
     public String getLugar() {
@@ -134,22 +113,6 @@ public class Cursos {
 
     public void setCorreoSeguimiento(String correoSeguimiento) {
         this.correoSeguimiento = correoSeguimiento;
-    }
-
-    public String getPrograma() {
-        return programa;
-    }
-
-    public void setPrograma(String programa) {
-        this.programa = programa;
-    }
-
-    public String getArchivo() {
-        return archivo;
-    }
-
-    public void setArchivo(String archivo) {
-        this.archivo = archivo;
     }
 
     public String getTipo() {
@@ -176,21 +139,35 @@ public class Cursos {
         this.valorCurricular = valorCurricular;
     }
 
-    public String getFechaLetra() {
-        return fechaLetra;
-    }
-
-    public void setFechaLetra(String fechaLetra) {
-        this.fechaLetra = fechaLetra;
-    }
 
     @Override
     public String toString() {
         return "Cursos [idCurso=" + idCurso + ", nombreCurso=" + nombreCurso + ", fecha=" + fecha + ", hora=" + hora
                 + ", imparte=" + imparte + ", cupo=" + cupo + ", estatusCupo=" + estatusCupo + ", estatusCurso="
-                + estatusCurso + ", observaciones=" + observaciones + ", lugar=" + lugar + ", correoSeguimiento="
-                + correoSeguimiento + ", programa=" + programa + ", archivo=" + archivo + ", tipo=" + tipo + ", curso="
-                + curso + ", valorCurricular=" + valorCurricular + ", fechaLetra=" + fechaLetra + "]";
+                + estatusCurso + ", lugar=" + lugar + ", correoSeguimiento="
+                + correoSeguimiento + ", tipo=" + tipo + ", curso=" + curso + ", valorCurricular=" + valorCurricular + "]";
+    }
+
+    public void setCupo(int cupo) {
+        this.cupo = cupo;
+    }
+
+    public int getEstatusCupo() {
+        return estatusCupo;
+    }
+
+    public void setEstatusCupo(int estatusCupo) {
+        this.estatusCupo = estatusCupo;
+    }
+
+
+    public String getLigaTeams() {
+        return ligaTeams;
+    }
+
+
+    public void setLigaTeams(String ligaTeams) {
+        this.ligaTeams = ligaTeams;
     }
 
     

@@ -93,11 +93,9 @@ public class App {
             response.type("application/json");
 
             String payload = request.body();
-            Cursos registro = gson.fromJson(payload, Cursos.class);
+            Cursos curso = gson.fromJson(payload, Cursos.class);
 
-            System.out.println("payload " + payload);
-
-            String mensaje = Dao.registrarCurso(registro);
+            String mensaje = Dao.registrarCurso(curso);
 
             Map<String, String> respuesta = new HashMap<>();
             respuesta.put("mensaje", mensaje);
@@ -116,6 +114,14 @@ public class App {
             return jsonEstados; 
         });
 
-        System.out.println("Hello World!!!!!!!!!!");
+        post("/registrarse", (request, response) -> {
+            response.type("application/json");
+            String payload = request.body();
+            Registro registro = gson.fromJson(payload, Registro.class);
+            System.out.println(registro.toString());
+            String respuesta = Dao.crearRegistro(registro);
+            return respuesta;
+        });
+
     }
 }

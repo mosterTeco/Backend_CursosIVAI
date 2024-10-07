@@ -2,58 +2,44 @@ package mx.ivai.POJO;
 
 public class Registro {
     private int idRegistro;
-    private String claveRegistro;
     private String nombre;
     private String apellidos;
     private String so;
     private String telefono;
     private String correo;
-    private Integer idCurso;
-    private String opcional;
-    private String procedencia;
-    private String gradoEstudios;
-    private String ordenGobierno;
-    private String area;
-    private String cargo;
-    private String titularSO;
-    private String titularUA;
-    private String comite;
-    private String sexo;
+    private int idCurso;
+    private String lugarDeProcedencia;
+    private String gradoDeEstudios;
+    private String orden;
+    private String areaAdquisicion;
+    private String cargoPublico;
+    private String genero;
     private String estado;
-    private String asistio;
-    private String otra1;
-    private String otra2;
-    private String inforEventos;
-    private String inter;
-
-    public Registro(int idRegistro, String claveRegistro, String nombre, String apellidos, String so, String telefono,
-            String correo, Integer idCurso, String opcional, String procedencia, String gradoEstudios,
-            String ordenGobierno, String area, String cargo, String titularSO, String titularUA, String comite,
-            String sexo, String estado, String asistio, String otra1, String otra2, String inforEventos, String inter) {
+    private String fecha;
+    private String recibirInformacion;
+    private String interprete;
+    
+    public Registro(int idRegistro, String nombre, String apellidos, String so, String telefono, String correo,
+            int idCurso, String lugarDeProcedencia, String gradoDeEstudios, String orden, String areaAdquisicion,
+            String cargoPublico, String genero, String estado, String fecha, String recibirInformacion,
+            String interprete) {
         this.idRegistro = idRegistro;
-        this.claveRegistro = claveRegistro;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.so = so;
         this.telefono = telefono;
         this.correo = correo;
         this.idCurso = idCurso;
-        this.opcional = opcional;
-        this.procedencia = procedencia;
-        this.gradoEstudios = gradoEstudios;
-        this.ordenGobierno = ordenGobierno;
-        this.area = area;
-        this.cargo = cargo;
-        this.titularSO = titularSO;
-        this.titularUA = titularUA;
-        this.comite = comite;
-        this.sexo = sexo;
+        this.lugarDeProcedencia = lugarDeProcedencia;
+        this.gradoDeEstudios = gradoDeEstudios;
+        this.orden = orden;
+        this.areaAdquisicion = areaAdquisicion;
+        this.cargoPublico = cargoPublico;
+        this.genero = genero;
         this.estado = estado;
-        this.asistio = asistio;
-        this.otra1 = otra1;
-        this.otra2 = otra2;
-        this.inforEventos = inforEventos;
-        this.inter = inter;
+        this.fecha = fecha;
+        this.recibirInformacion = recibirInformacion;
+        this.interprete = interprete;
     }
 
     public int getIdRegistro() {
@@ -62,14 +48,6 @@ public class Registro {
 
     public void setIdRegistro(int idRegistro) {
         this.idRegistro = idRegistro;
-    }
-
-    public String getClaveRegistro() {
-        return claveRegistro;
-    }
-
-    public void setClaveRegistro(String claveRegistro) {
-        this.claveRegistro = claveRegistro;
     }
 
     public String getNombre() {
@@ -112,92 +90,60 @@ public class Registro {
         this.correo = correo;
     }
 
-    public Integer getIdCurso() {
+    public int getIdCurso() {
         return idCurso;
     }
 
-    public void setIdCurso(Integer idCurso) {
+    public void setIdCurso(int idCurso) {
         this.idCurso = idCurso;
     }
 
-    public String getOpcional() {
-        return opcional;
+    public String getLugarDeProcedencia() {
+        return lugarDeProcedencia;
     }
 
-    public void setOpcional(String opcional) {
-        this.opcional = opcional;
+    public void setLugarDeProcedencia(String lugarDeProcedencia) {
+        this.lugarDeProcedencia = lugarDeProcedencia;
     }
 
-    public String getProcedencia() {
-        return procedencia;
+    public String getGradoDeEstudios() {
+        return gradoDeEstudios;
     }
 
-    public void setProcedencia(String procedencia) {
-        this.procedencia = procedencia;
+    public void setGradoDeEstudios(String gradoDeEstudios) {
+        this.gradoDeEstudios = gradoDeEstudios;
     }
 
-    public String getGradoEstudios() {
-        return gradoEstudios;
+    public String getOrden() {
+        return orden;
     }
 
-    public void setGradoEstudios(String gradoEstudios) {
-        this.gradoEstudios = gradoEstudios;
+    public void setOrden(String orden) {
+        this.orden = orden;
     }
 
-    public String getOrdenGobierno() {
-        return ordenGobierno;
+    public String getAreaAdquisicion() {
+        return areaAdquisicion;
     }
 
-    public void setOrdenGobierno(String ordenGobierno) {
-        this.ordenGobierno = ordenGobierno;
+    public void setAreaAdquisicion(String areaAdquisicion) {
+        this.areaAdquisicion = areaAdquisicion;
     }
 
-    public String getArea() {
-        return area;
+    public String getCargoPublico() {
+        return cargoPublico;
     }
 
-    public void setArea(String area) {
-        this.area = area;
+    public void setCargoPublico(String cargoPublico) {
+        this.cargoPublico = cargoPublico;
     }
 
-    public String getCargo() {
-        return cargo;
+    public String getGenero() {
+        return genero;
     }
 
-    public void setCargo(String cargo) {
-        this.cargo = cargo;
-    }
-
-    public String getTitularSO() {
-        return titularSO;
-    }
-
-    public void setTitularSO(String titularSO) {
-        this.titularSO = titularSO;
-    }
-
-    public String getTitularUA() {
-        return titularUA;
-    }
-
-    public void setTitularUA(String titularUA) {
-        this.titularUA = titularUA;
-    }
-
-    public String getComite() {
-        return comite;
-    }
-
-    public void setComite(String comite) {
-        this.comite = comite;
-    }
-
-    public String getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
+    public void setGenero(String genero) {
+        this.genero = genero;
     }
 
     public String getEstado() {
@@ -208,44 +154,30 @@ public class Registro {
         this.estado = estado;
     }
 
-    public String getAsistio() {
-        return asistio;
+    public String getFecha() {
+        return fecha;
     }
 
-    public void setAsistio(String asistio) {
-        this.asistio = asistio;
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
     }
 
-    public String getOtra1() {
-        return otra1;
+    public String getRecibirInformacion() {
+        return recibirInformacion;
     }
 
-    public void setOtra1(String otra1) {
-        this.otra1 = otra1;
+    public void setRecibirInformacion(String recibirInformacion) {
+        this.recibirInformacion = recibirInformacion;
     }
 
-    public String getOtra2() {
-        return otra2;
+    public String getInterprete() {
+        return interprete;
     }
 
-    public void setOtra2(String otra2) {
-        this.otra2 = otra2;
+    public void setInterprete(String interprete) {
+        this.interprete = interprete;
     }
 
-    public String getInforEventos() {
-        return inforEventos;
-    }
-
-    public void setInforEventos(String inforEventos) {
-        this.inforEventos = inforEventos;
-    }
-
-    public String getInter() {
-        return inter;
-    }
-
-    public void setInter(String inter) {
-        this.inter = inter;
-    }
+    
 
 }
