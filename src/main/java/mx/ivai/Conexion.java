@@ -7,8 +7,8 @@ import java.sql.SQLException;
 public class Conexion {
     public static String url="jdbc:mysql://localhost:3306/dbo";
     public static String Drivername="com.mysql.cj.jdbc.Driver";
-    public static String username="root";
-    public static String password="root29";
+    public static String username="IVAI_db";
+    public static String password="1234";
 
     private static Connection conexion=null;
 
