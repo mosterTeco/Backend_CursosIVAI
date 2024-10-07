@@ -16,8 +16,6 @@ public class Cursos {
     private String ligaTeams;
     private String valorCurricular;
 
-    
-
     public Cursos() {
     }
 

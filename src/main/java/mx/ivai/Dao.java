@@ -349,4 +349,60 @@ public class Dao {
         return estados;
     }
 
+    
+    public static String editarCurso(Cursos curso) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        String msj = "";
+    
+        conn = c.getConnection();
+    
+        try {
+            String sql = "UPDATE Curso SET NombreCurso = ?, Fecha = ?, Hora = ?, Imparte = ?, EstatusCupo = ?, EstatusCurso = ?, "
+                       + " Lugar = ?, CorreoSeguimiento = ?, Tipo = ?, Curso = ?, ValorCurricular = ? "
+                       + "WHERE IdCurso = ?";
+    
+            stm = conn.prepareStatement(sql);
+
+            stm.setString(1, curso.getNombreCurso());
+            stm.setString(2, curso.getFecha());
+            stm.setString(3, curso.getHora());
+            stm.setString(4, curso.getImparte());
+            stm.setInt(5, curso.getEstatusCupo());
+            stm.setString(6, curso.getEstatusCurso());
+            stm.setString(7, curso.getLugar());
+            stm.setString(8, curso.getCorreoSeguimiento());
+            stm.setString(9, curso.getTipo());
+            stm.setString(10, curso.getCurso());
+            stm.setString(11, curso.getValorCurricular());
+            stm.setInt(12, curso.getIdCurso());
+    
+            if (stm.executeUpdate() > 0) {
+                msj = "Curso actualizado con éxito";
+            } else {
+                msj = "No se pudo actualizar el curso";
+            }
+    
+        } catch (Exception e) {
+            System.out.println(e);
+            msj = "Error: " + e.getMessage();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        System.out.println("Datos recibidos: " + curso);
+        return msj;
+    } 
 }
