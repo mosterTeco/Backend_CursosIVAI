@@ -132,12 +132,63 @@ public class Dao {
             stm.setString(15, reg.getRecibirInformacion());
             stm.setString(16, reg.getInterprete());
 
-            if (stm.executeUpdate() > 0)
+            if (stm.executeUpdate() > 0){
                 msj = "Registro Correcto";
+                reducirCupo(reg.getIdCurso());
+            }
             else
-                msj = "No se ha podifo completar el registro";
+                msj = "No se ha podido completar el registro";
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                stm = null;
+            }
+            try {
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return msj;
+    }
+
+    private static String reducirCupo(int idCurso) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        int cupo = 0;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String msj = "";
+        conn = c.getConnection();
+        try {
+            String query = "SELECT EstatusCupo FROM curso WHERE idCurso = " + idCurso;
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                cupo = rs.getInt("EstatusCupo") - 1;
+            }
+
+            query = "UPDATE curso SET EstatusCupo = ? where idCurso = ?";
+            stm = conn.prepareStatement(query);
+            stm.setInt(1, cupo);
+            stm.setInt(2, idCurso);
+
+            if (stm.executeUpdate() > 0) {
+                msj = "Curso actualizado con éxito";
+            } else {
+                msj = "No se pudo actualizar el curso";
+            }
+    
         } catch (Exception e) {
             System.out.println(e);
+            msj = "Error: " + e.getMessage();
         } finally {
             if (stm != null) {
                 try {
@@ -145,10 +196,11 @@ public class Dao {
                 } catch (Exception e) {
                     System.out.println(e);
                 }
-                stm = null;
             }
             try {
-                conn.close();
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (Exception e) {
                 System.out.println(e);
             }
@@ -227,7 +279,7 @@ public class Dao {
                 curso.setCupo(rs.getInt("Cupo"));
                 curso.setEstatusCupo(rs.getInt("EstatusCupo"));
                 curso.setEstatusCurso(rs.getString("EstatusCurso"));
-                curso.setLugar(rs.getString("Lugar"));
+                curso.setModalidad(rs.getString("Modalidad"));
                 curso.setCorreoSeguimiento(rs.getString("CorreoSeguimiento"));
                 curso.setTipo(rs.getString("Tipo"));
                 curso.setCurso(rs.getString("Curso"));
@@ -265,8 +317,8 @@ public class Dao {
         conn = c.getConnection();
 
         try {
-            String sql = "INSERT INTO Curso (NombreCurso, Fecha, Hora, Imparte, Cupo, EstatusCupo, EstatusCurso, Lugar, CorreoSeguimiento, Tipo, Curso, LigaTeams, ValorCurricular) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'cursos.ivai@gmail.com', ?, ?, ?, ? )";
+            String sql = "INSERT INTO Curso (NombreCurso, Fecha, Hora, Imparte, Cupo, EstatusCupo, EstatusCurso, Modalidad, Direccion, CorreoSeguimiento, Tipo, Curso, LigaTeams, ValorCurricular) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,'cursos.ivai@gmail.com', ?, ?, ?, ? )";
 
             stm = conn.prepareStatement(sql);
 
@@ -278,11 +330,12 @@ public class Dao {
             stm.setInt(5, curso.getCupo());
             stm.setInt(6, curso.getEstatusCupo());
             stm.setString(7, curso.getEstatusCurso());
-            stm.setString(8, curso.getLugar());
-            stm.setString(9, curso.getTipo());
-            stm.setString(10, curso.getCurso());
-            stm.setString(11, curso.getLigaTeams());
-            stm.setString(12, curso.getValorCurricular());
+            stm.setString(8, curso.getModalidad());
+            stm.setString(9, curso.getDireccion());
+            stm.setString(10, curso.getTipo());
+            stm.setString(11, curso.getCurso());
+            stm.setString(12, curso.getLigaTeams());
+            stm.setString(13, curso.getValorCurricular());
 
             if (stm.executeUpdate() > 0)
                 msj = "Curso registrado con exito";
@@ -370,7 +423,7 @@ public class Dao {
             stm.setString(4, curso.getImparte());
             stm.setInt(5, curso.getEstatusCupo());
             stm.setString(6, curso.getEstatusCurso());
-            stm.setString(7, curso.getLugar());
+            stm.setString(7, curso.getModalidad());
             stm.setString(8, curso.getCorreoSeguimiento());
             stm.setString(9, curso.getTipo());
             stm.setString(10, curso.getCurso());

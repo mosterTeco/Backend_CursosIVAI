@@ -9,7 +9,8 @@ public class Cursos {
     private int cupo;  
     private int estatusCupo;
     private String estatusCurso;
-    private String lugar;
+    private String modalidad;
+    private String direccion;
     private String correoSeguimiento;
     private String tipo;
     private String curso;
@@ -21,7 +22,7 @@ public class Cursos {
 
 
     public Cursos(int idCurso, String nombreCurso, String fecha, String hora, String imparte, int cupo, int estatusCupo,
-            String estatusCurso, String lugar, String correoSeguimiento, String tipo, String curso, String ligaTeams,
+            String estatusCurso, String modalidad, String direccion, String correoSeguimiento, String tipo, String curso, String ligaTeams,
             String valorCurricular) {
         this.idCurso = idCurso;
         this.nombreCurso = nombreCurso;
@@ -31,7 +32,8 @@ public class Cursos {
         this.cupo = cupo;
         this.estatusCupo = estatusCupo;
         this.estatusCurso = estatusCurso;
-        this.lugar = lugar;
+        this.modalidad = modalidad;
+        this.direccion = direccion;
         this.correoSeguimiento = correoSeguimiento;
         this.tipo = tipo;
         this.curso = curso;
@@ -97,12 +99,12 @@ public class Cursos {
         this.estatusCurso = estatusCurso;
     }
 
-    public String getLugar() {
-        return lugar;
+    public String getModalidad() {
+        return modalidad;
     }
 
-    public void setLugar(String lugar) {
-        this.lugar = lugar;
+    public void setModalidad(String modalidad) {
+        this.modalidad = modalidad;
     }
 
     public String getCorreoSeguimiento() {
@@ -137,15 +139,6 @@ public class Cursos {
         this.valorCurricular = valorCurricular;
     }
 
-
-    @Override
-    public String toString() {
-        return "Cursos [idCurso=" + idCurso + ", nombreCurso=" + nombreCurso + ", fecha=" + fecha + ", hora=" + hora
-                + ", imparte=" + imparte + ", cupo=" + cupo + ", estatusCupo=" + estatusCupo + ", estatusCurso="
-                + estatusCurso + ", lugar=" + lugar + ", correoSeguimiento="
-                + correoSeguimiento + ", tipo=" + tipo + ", curso=" + curso + ", valorCurricular=" + valorCurricular + "]";
-    }
-
     public void setCupo(int cupo) {
         this.cupo = cupo;
     }
@@ -167,6 +160,26 @@ public class Cursos {
     public void setLigaTeams(String ligaTeams) {
         this.ligaTeams = ligaTeams;
     }
+    
+    public String getDireccion() {
+        return direccion;
+    }
+
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+    
+    @Override
+    public String toString() {
+        return "Cursos [idCurso=" + idCurso + ", nombreCurso=" + nombreCurso + ", fecha=" + fecha + ", hora=" + hora
+                + ", imparte=" + imparte + ", cupo=" + cupo + ", estatusCupo=" + estatusCupo + ", estatusCurso="
+                + estatusCurso + ", modalidad=" + modalidad + ", correoSeguimiento="
+                + correoSeguimiento + ", tipo=" + tipo + ", curso=" + curso + ", valorCurricular=" + valorCurricular + "]";
+    }
+
+
+
 
     
     

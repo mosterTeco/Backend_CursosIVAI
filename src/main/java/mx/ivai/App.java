@@ -137,7 +137,6 @@ public class App {
             response.type("application/json");
             String payload = request.body();
             Registro registro = gson.fromJson(payload, Registro.class);
-            System.out.println(registro.toString());
             String respuesta = Dao.crearRegistro(registro);
             return respuesta;
         });
