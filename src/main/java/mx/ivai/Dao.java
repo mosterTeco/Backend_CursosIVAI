@@ -3,12 +3,10 @@ package mx.ivai;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.plaf.nimbus.State;
-
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import mx.ivai.Mail;
 
 import mx.ivai.POJO.*;
 
@@ -135,6 +133,7 @@ public class Dao {
             if (stm.executeUpdate() > 0){
                 msj = "Registro Correcto";
                 reducirCupo(reg.getIdCurso());
+                Mail.inicializarMail(reg, obtenerCurso(reg.getIdCurso()));
             }
             else
                 msj = "No se ha podido completar el registro";
@@ -156,6 +155,57 @@ public class Dao {
             }
         }
         return msj;
+    }
+
+    public static Cursos obtenerCurso(int idCurso){
+        PreparedStatement stm = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Cursos curso = new Cursos();
+        conn = c.getConnection();
+        try {
+            String query = "SELECT * FROM curso WHERE idCurso = " + idCurso;
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                curso.setIdCurso(rs.getInt("IdCurso"));
+                curso.setNombreCurso(rs.getString("NombreCurso"));
+                curso.setFecha(rs.getString("Fecha"));
+                curso.setHora(rs.getString("Hora"));
+                curso.setImparte(rs.getString("Imparte"));
+                curso.setCupo(rs.getInt("Cupo"));
+                curso.setEstatusCupo(rs.getInt("EstatusCupo"));
+                curso.setEstatusCurso(rs.getString("EstatusCurso"));
+                curso.setModalidad(rs.getString("Modalidad"));
+                curso.setDireccion(rs.getString("Direccion"));
+                curso.setCorreoSeguimiento(rs.getString("CorreoSeguimiento"));
+                curso.setLigaTeams(rs.getString("LigaTeams"));
+                curso.setTipo(rs.getString("Tipo"));
+                curso.setCurso(rs.getString("Curso"));
+                curso.setValorCurricular(rs.getString("ValorCurricular"));
+            }
+    
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return curso;
     }
 
     private static String reducirCupo(int idCurso) {
@@ -181,9 +231,9 @@ public class Dao {
             stm.setInt(2, idCurso);
 
             if (stm.executeUpdate() > 0) {
-                msj = "Curso actualizado con éxito";
+                msj = "Cupo reducido con éxito";
             } else {
-                msj = "No se pudo actualizar el curso";
+                msj = "No se pudo reducir el cupo";
             }
     
         } catch (Exception e) {
@@ -249,6 +299,67 @@ public class Dao {
         }
 
         return TiposCurso;
+
+    }
+
+
+    //Metodo que devuelve todos los registros de un curso
+    public static ArrayList<Registro> obtenerRegistros(int idCurso) {
+
+        PreparedStatement stm = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<Registro> registros = new ArrayList<Registro>();
+
+        conn = c.getConnection();
+
+        try {
+
+            String query = "SELECT * FROM Registro WHERE IdCurso = " + idCurso;
+            ps = conn.prepareStatement(query);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Registro registro = new Registro();
+                registro.setIdRegistro(rs.getInt("IdRegistro"));
+                registro.setNombre(rs.getString("Nombre"));
+                registro.setApellidos(rs.getString("Apellidos"));
+                registro.setSo(rs.getString("SO"));
+                registro.setTelefono(rs.getString("Telefono"));
+                registro.setCorreo(rs.getString("Correo"));
+                registro.setIdCurso(rs.getInt("IdCurso"));
+                registro.setLugarDeProcedencia(rs.getString("Procedencia"));
+                registro.setGradoDeEstudios(rs.getString("GradoEstudios"));
+                registro.setOrden(rs.getString("OrdenGobierno"));
+                registro.setAreaAdquisicion(rs.getString("Area"));
+                registro.setCargoPublico(rs.getString("Cargo"));
+                registro.setGenero(rs.getString("Genero"));
+                registro.setEstado(rs.getString("Estado"));
+                registro.setFecha(rs.getString("Fecha"));
+                registro.setRecibirInformacion(rs.getString("InfoEventos"));
+                registro.setInterprete(rs.getString("Interprete"));
+                registros.add(registro);
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Error al obtener los registros de la tabla registro: " + ex.toString());
+            ex.printStackTrace();
+
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return registros;
 
     }
 

@@ -104,6 +104,37 @@ public class App {
             return gson.toJson(respuesta);
         });
 
+        // Petición para obtener archivo excel de los regitros
+        get("/obtenerExcelRegistros/:idCurso", (request, response) -> {
+            int idCurso = Integer.parseInt(request.params("idCurso"));
+            String nombreCurso = Dao.obtenerCurso(idCurso).getNombreCurso();
+            ArrayList<Registro> registros = Dao.obtenerRegistros(idCurso);
+
+            byte[] excelData = Excel.excelRegistros(registros, nombreCurso);
+            if (excelData != null) {
+                response.type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                response.header("Content-Disposition", "attachment; filename=\"registros_curso_" + idCurso + ".xlsx\"");
+                response.raw().getOutputStream().write(excelData);
+                response.raw().getOutputStream().flush();
+                return null; // No retorno texto, ya que estamos mandando un archivo
+            } else {
+                response.status(500);
+                return "Error al generar el archivo Excel";
+            }
+        });
+        // post("/obtenerExcelRegistros", (request, response) -> {
+        // int cursoId = Integer.parseInt(request.queryParams("idCurso"));
+
+        // ArrayList<Registro> registros = Dao.obtenerRegistros();
+        // byte[] excelData = Excel.excelRegistros(registros,
+        // Dao.obtenerCurso(cursoId).getNombreCurso());
+
+        // response.type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        // response.header("Content-Disposition", "attachment;
+        // filename=registros.xlsx");
+        // return excelData;
+        // });
+
         post("/estado", (request, response) -> {
             response.type("application/json");
 
@@ -125,7 +156,7 @@ public class App {
             System.out.println("Datos recibidos en el backend: " + body);
 
             Gson gson = new Gson();
-            
+
             Cursos curso = gson.fromJson(body, Cursos.class);
 
             String resultado = Dao.editarCurso(curso);

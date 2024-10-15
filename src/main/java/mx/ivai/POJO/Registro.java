@@ -18,6 +18,10 @@ public class Registro {
     private String fecha;
     private String recibirInformacion;
     private String interprete;
+
+    public Registro(){
+        
+    }
     
     public Registro(int idRegistro, String nombre, String apellidos, String so, String telefono, String correo,
             int idCurso, String lugarDeProcedencia, String gradoDeEstudios, String orden, String areaAdquisicion,
