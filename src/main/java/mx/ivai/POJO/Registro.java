@@ -8,6 +8,7 @@ public class Registro {
     private String telefono;
     private String correo;
     private int idCurso;
+    private String nombreCurso;
     private String lugarDeProcedencia;
     private String gradoDeEstudios;
     private String orden;
@@ -22,11 +23,11 @@ public class Registro {
     public Registro(){
         
     }
-    
+
     public Registro(int idRegistro, String nombre, String apellidos, String so, String telefono, String correo,
-            int idCurso, String lugarDeProcedencia, String gradoDeEstudios, String orden, String areaAdquisicion,
-            String cargoPublico, String genero, String estado, String fecha, String recibirInformacion,
-            String interprete) {
+            int idCurso, String nombreCurso, String lugarDeProcedencia, String gradoDeEstudios, String orden,
+            String areaAdquisicion, String cargoPublico, String genero, String estado, String fecha,
+            String recibirInformacion, String interprete) {
         this.idRegistro = idRegistro;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -34,6 +35,7 @@ public class Registro {
         this.telefono = telefono;
         this.correo = correo;
         this.idCurso = idCurso;
+        this.nombreCurso = nombreCurso;
         this.lugarDeProcedencia = lugarDeProcedencia;
         this.gradoDeEstudios = gradoDeEstudios;
         this.orden = orden;
@@ -100,6 +102,14 @@ public class Registro {
 
     public void setIdCurso(int idCurso) {
         this.idCurso = idCurso;
+    }
+
+    public String getNombreCurso() {
+        return nombreCurso;
+    }
+
+    public void setNombreCurso(String nombreCurso) {
+        this.nombreCurso = nombreCurso;
     }
 
     public String getLugarDeProcedencia() {
@@ -181,7 +191,7 @@ public class Registro {
     public void setInterprete(String interprete) {
         this.interprete = interprete;
     }
-
+    
     
 
 }

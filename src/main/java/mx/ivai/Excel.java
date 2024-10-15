@@ -18,9 +18,9 @@ public class Excel {
     public static byte[] excelRegistros(ArrayList<Registro> registros, String nombreCurso) {
         try {
             String[] encabezados = {
-                    "ID", "Nombre", "Apellidos", "SO", "Teléfono", "Correo", "ID Curso",
-                    "Lugar de Procedencia", "Grado de Estudios", "Orden", "Área de Adquisición",
-                    "Cargo Público", "Género", "Estado", "Fecha", "Recibir Información", "Intérprete"
+                    "Id del Registro", "Nombre", "Apellidos", "Sujeto Obligado", "Teléfono", "Correo", "Id Curso", "Nombre del Curso",
+                    "Lugar de Procedencia", "Grado de Estudios", "Orden de Gobierno", "Área de Adquisición",
+                    "Cargo Público", "Género", "Estado", "Fecha de Registro", "Desea Recibir Información", "Necesita un Intérprete"
             };
     
             Workbook libro = new XSSFWorkbook(); 
@@ -43,16 +43,17 @@ public class Excel {
                 row.createCell(4).setCellValue(registro.getTelefono());
                 row.createCell(5).setCellValue(registro.getCorreo());
                 row.createCell(6).setCellValue(registro.getIdCurso());
-                row.createCell(7).setCellValue(registro.getLugarDeProcedencia());
-                row.createCell(8).setCellValue(registro.getGradoDeEstudios());
-                row.createCell(9).setCellValue(registro.getOrden());
-                row.createCell(10).setCellValue(registro.getAreaAdquisicion());
-                row.createCell(11).setCellValue(registro.getCargoPublico());
-                row.createCell(12).setCellValue(registro.getGenero());
-                row.createCell(13).setCellValue(registro.getEstado());
-                row.createCell(14).setCellValue(registro.getFecha());
-                row.createCell(15).setCellValue(registro.getRecibirInformacion());
-                row.createCell(16).setCellValue(registro.getInterprete());
+                row.createCell(7).setCellValue(registro.getNombreCurso());
+                row.createCell(8).setCellValue(registro.getLugarDeProcedencia());
+                row.createCell(9).setCellValue(registro.getGradoDeEstudios());
+                row.createCell(10).setCellValue(registro.getOrden());
+                row.createCell(11).setCellValue(registro.getAreaAdquisicion());
+                row.createCell(12).setCellValue(registro.getCargoPublico());
+                row.createCell(13).setCellValue(registro.getGenero());
+                row.createCell(14).setCellValue(registro.getEstado());
+                row.createCell(15).setCellValue(registro.getFecha());
+                row.createCell(16).setCellValue(registro.getRecibirInformacion());
+                row.createCell(17).setCellValue(registro.getInterprete());
             }
     
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

@@ -316,7 +316,9 @@ public class Dao {
 
         try {
 
-            String query = "SELECT * FROM Registro WHERE IdCurso = " + idCurso;
+            String query = "SELECT IdRegistro, Nombre, Apellidos, SO, Telefono, Correo, Registro.IdCurso, Curso.NombreCurso,Procedencia,"
+            + "GradoEstudios, OrdenGobierno, Area, Cargo, Genero, Estado, Registro.Fecha, InfoEventos, Interprete FROM Registro," 
+            + "Curso WHERE Registro.IdCurso = Curso.IdCurso AND Registro.IdCurso =" + idCurso;
             ps = conn.prepareStatement(query);
 
             rs = ps.executeQuery();
@@ -330,6 +332,7 @@ public class Dao {
                 registro.setTelefono(rs.getString("Telefono"));
                 registro.setCorreo(rs.getString("Correo"));
                 registro.setIdCurso(rs.getInt("IdCurso"));
+                registro.setNombreCurso(rs.getString("NombreCurso"));
                 registro.setLugarDeProcedencia(rs.getString("Procedencia"));
                 registro.setGradoDeEstudios(rs.getString("GradoEstudios"));
                 registro.setOrden(rs.getString("OrdenGobierno"));
