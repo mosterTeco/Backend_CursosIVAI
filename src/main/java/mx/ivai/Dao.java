@@ -391,9 +391,11 @@ public class Dao {
                 curso.setEstatusCupo(rs.getInt("EstatusCupo"));
                 curso.setEstatusCurso(rs.getString("EstatusCurso"));
                 curso.setModalidad(rs.getString("Modalidad"));
+                curso.setDireccion(rs.getString("Direccion"));
                 curso.setCorreoSeguimiento(rs.getString("CorreoSeguimiento"));
                 curso.setTipo(rs.getString("Tipo"));
                 curso.setCurso(rs.getString("Curso"));
+                curso.setLigaTeams(rs.getString("LigaTeams"));
                 curso.setValorCurricular(rs.getString("ValorCurricular"));
                 cursos.add(curso);
             }
@@ -523,7 +525,7 @@ public class Dao {
     
         try {
             String sql = "UPDATE Curso SET NombreCurso = ?, Fecha = ?, Hora = ?, Imparte = ?, EstatusCupo = ?, EstatusCurso = ?, "
-                       + " Lugar = ?, CorreoSeguimiento = ?, Tipo = ?, Curso = ?, ValorCurricular = ? "
+                       + " Modalidad = ?, Direccion = ?, CorreoSeguimiento = ?, Tipo = ?, Curso = ?, LigaTeams = ?, ValorCurricular = ?"
                        + "WHERE IdCurso = ?";
     
             stm = conn.prepareStatement(sql);
@@ -535,11 +537,13 @@ public class Dao {
             stm.setInt(5, curso.getEstatusCupo());
             stm.setString(6, curso.getEstatusCurso());
             stm.setString(7, curso.getModalidad());
-            stm.setString(8, curso.getCorreoSeguimiento());
-            stm.setString(9, curso.getTipo());
-            stm.setString(10, curso.getCurso());
-            stm.setString(11, curso.getValorCurricular());
-            stm.setInt(12, curso.getIdCurso());
+            stm.setString(8, curso.getDireccion());
+            stm.setString(9, curso.getCorreoSeguimiento());
+            stm.setString(10, curso.getTipo());
+            stm.setString(11, curso.getCurso());
+            stm.setString(12, curso.getLigaTeams());
+            stm.setString(13, curso.getValorCurricular());
+            stm.setInt(14, curso.getIdCurso());
     
             if (stm.executeUpdate() > 0) {
                 msj = "Curso actualizado con éxito";
