@@ -108,56 +108,61 @@ public class Dao {
 
         conn = c.getConnection();
 
-        try {
-            String sql = "INSERT INTO Registro ( Nombre, Apellidos, SO, Telefono, Correo, IdCurso, Procedencia, GradoEstudios, OrdenGobierno, Area, Cargo, Genero, Estado, Fecha, InfoEventos, Interprete) "
-                    +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            stm = conn.prepareStatement(sql);
-            stm.setString(1, reg.getNombre());
-            stm.setString(2, reg.getApellidos());
-            stm.setString(3, reg.getSo());
-            stm.setString(4, reg.getTelefono());
-            stm.setString(5, reg.getCorreo());
-            stm.setInt(6, reg.getIdCurso());
-            stm.setString(7, reg.getLugarDeProcedencia());
-            stm.setString(8, reg.getGradoDeEstudios());
-            stm.setString(9, reg.getOrden());
-            stm.setString(10, reg.getAreaAdquisicion());
-            stm.setString(11, reg.getCargoPublico());
-            stm.setString(12, reg.getGenero());
-            stm.setString(13, reg.getEstado());
-            stm.setString(14, fechaFormateada);
-            stm.setString(15, reg.getRecibirInformacion());
-            stm.setString(16, reg.getInterprete());
+        Cursos curso = obtenerCurso(reg.getIdCurso());
+        if (curso.getEstatusCupo() > 0) {
+            try {
+                String sql = "INSERT INTO Registro ( Nombre, Apellidos, SO, Telefono, Correo, IdCurso, Procedencia, GradoEstudios, OrdenGobierno, Area, Cargo, Genero, Estado, Fecha, InfoEventos, Interprete) "
+                        +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                stm = conn.prepareStatement(sql);
+                stm.setString(1, reg.getNombre());
+                stm.setString(2, reg.getApellidos());
+                stm.setString(3, reg.getSo());
+                stm.setString(4, reg.getTelefono());
+                stm.setString(5, reg.getCorreo());
+                stm.setInt(6, reg.getIdCurso());
+                stm.setString(7, reg.getLugarDeProcedencia());
+                stm.setString(8, reg.getGradoDeEstudios());
+                stm.setString(9, reg.getOrden());
+                stm.setString(10, reg.getAreaAdquisicion());
+                stm.setString(11, reg.getCargoPublico());
+                stm.setString(12, reg.getGenero());
+                stm.setString(13, reg.getEstado());
+                stm.setString(14, fechaFormateada);
+                stm.setString(15, reg.getRecibirInformacion());
+                stm.setString(16, reg.getInterprete());
 
-            if (stm.executeUpdate() > 0){
-                msj = "Registro Correcto";
-                reducirCupo(reg.getIdCurso());
-                Mail.inicializarMail(reg, obtenerCurso(reg.getIdCurso()));
-            }
-            else
-                msj = "No se ha podido completar el registro";
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (stm != null) {
+                if (stm.executeUpdate() > 0) {
+                    msj = "Registro Correcto";
+                    reducirCupo(reg.getIdCurso());
+                    Mail.inicializarMail(reg, obtenerCurso(reg.getIdCurso()));
+                } else
+                    msj = "No se ha podido completar el registro";
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (stm != null) {
+                    try {
+                        stm.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    stm = null;
+                }
                 try {
-                    stm.close();
+                    conn.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                stm = null;
             }
-            try {
-                conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } else {
+            msj = "Curso lleno";
         }
+
         return msj;
     }
 
-    public static Cursos obtenerCurso(int idCurso){
+    public static Cursos obtenerCurso(int idCurso) {
         PreparedStatement stm = null;
         Connection conn = null;
         PreparedStatement ps = null;
@@ -186,7 +191,7 @@ public class Dao {
                 curso.setCurso(rs.getString("Curso"));
                 curso.setValorCurricular(rs.getString("ValorCurricular"));
             }
-    
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -235,7 +240,7 @@ public class Dao {
             } else {
                 msj = "No se pudo reducir el cupo";
             }
-    
+
         } catch (Exception e) {
             System.out.println(e);
             msj = "Error: " + e.getMessage();
@@ -302,8 +307,7 @@ public class Dao {
 
     }
 
-
-    //Metodo que devuelve todos los registros de un curso
+    // Metodo que devuelve todos los registros de un curso
     public static ArrayList<Registro> obtenerRegistros(int idCurso) {
 
         PreparedStatement stm = null;
@@ -317,8 +321,8 @@ public class Dao {
         try {
 
             String query = "SELECT IdRegistro, Nombre, Apellidos, SO, Telefono, Correo, Registro.IdCurso, Curso.NombreCurso,Procedencia,"
-            + "GradoEstudios, OrdenGobierno, Area, Cargo, Genero, Estado, Registro.Fecha, InfoEventos, Interprete FROM Registro," 
-            + "Curso WHERE Registro.IdCurso = Curso.IdCurso AND Registro.IdCurso =" + idCurso;
+                    + "GradoEstudios, OrdenGobierno, Area, Cargo, Genero, Estado, Registro.Fecha, InfoEventos, Interprete, Asistencia FROM Registro,"
+                    + "Curso WHERE Registro.IdCurso = Curso.IdCurso AND Registro.IdCurso =" + idCurso;
             ps = conn.prepareStatement(query);
 
             rs = ps.executeQuery();
@@ -343,6 +347,7 @@ public class Dao {
                 registro.setFecha(rs.getString("Fecha"));
                 registro.setRecibirInformacion(rs.getString("InfoEventos"));
                 registro.setInterprete(rs.getString("Interprete"));
+                registro.setAsistencia(rs.getString("Asistencia"));
                 registros.add(registro);
             }
 
@@ -443,7 +448,7 @@ public class Dao {
             stm.setString(2, curso.getFecha()); // Conversión de LocalDateTime a Timestamp
             stm.setString(3, curso.getHora());
             stm.setString(4, curso.getImparte());
-            stm.setInt(5, curso.getCupo());
+            stm.setInt(5, curso.getEstatusCupo());
             stm.setInt(6, curso.getEstatusCupo());
             stm.setString(7, curso.getEstatusCurso());
             stm.setString(8, curso.getModalidad());
@@ -518,19 +523,18 @@ public class Dao {
         return estados;
     }
 
-    
     public static String editarCurso(Cursos curso) {
         PreparedStatement stm = null;
         Connection conn = null;
         String msj = "";
-    
+
         conn = c.getConnection();
-    
+
         try {
             String sql = "UPDATE Curso SET NombreCurso = ?, Fecha = ?, Hora = ?, Imparte = ?, EstatusCupo = ?, EstatusCurso = ?, "
-                       + " Modalidad = ?, Direccion = ?, CorreoSeguimiento = ?, Tipo = ?, Curso = ?, LigaTeams = ?, ValorCurricular = ?"
-                       + "WHERE IdCurso = ?";
-    
+                    + " Modalidad = ?, Direccion = ?, CorreoSeguimiento = ?, Tipo = ?, Curso = ?, LigaTeams = ?, ValorCurricular = ?"
+                    + "WHERE IdCurso = ?";
+
             stm = conn.prepareStatement(sql);
 
             stm.setString(1, curso.getNombreCurso());
@@ -547,13 +551,13 @@ public class Dao {
             stm.setString(12, curso.getLigaTeams());
             stm.setString(13, curso.getValorCurricular());
             stm.setInt(14, curso.getIdCurso());
-    
+
             if (stm.executeUpdate() > 0) {
                 msj = "Curso actualizado con éxito";
             } else {
                 msj = "No se pudo actualizar el curso";
             }
-    
+
         } catch (Exception e) {
             System.out.println(e);
             msj = "Error: " + e.getMessage();
@@ -575,5 +579,5 @@ public class Dao {
         }
         System.out.println("Datos recibidos: " + curso);
         return msj;
-    } 
+    }
 }

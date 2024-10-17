@@ -19,6 +19,7 @@ public class Registro {
     private String fecha;
     private String recibirInformacion;
     private String interprete;
+    private String asistencia;
 
     public Registro(){
         
@@ -27,7 +28,7 @@ public class Registro {
     public Registro(int idRegistro, String nombre, String apellidos, String so, String telefono, String correo,
             int idCurso, String nombreCurso, String lugarDeProcedencia, String gradoDeEstudios, String orden,
             String areaAdquisicion, String cargoPublico, String genero, String estado, String fecha,
-            String recibirInformacion, String interprete) {
+            String recibirInformacion, String interprete, String asistencia) {
         this.idRegistro = idRegistro;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -46,7 +47,10 @@ public class Registro {
         this.fecha = fecha;
         this.recibirInformacion = recibirInformacion;
         this.interprete = interprete;
+        this.asistencia = asistencia;
     }
+
+
 
     public int getIdRegistro() {
         return idRegistro;
@@ -191,7 +195,13 @@ public class Registro {
     public void setInterprete(String interprete) {
         this.interprete = interprete;
     }
-    
-    
+
+    public String getAsistencia() {
+        return asistencia;
+    }
+
+    public void setAsistencia(String asistencia) {
+        this.asistencia = asistencia;
+    }
 
 }

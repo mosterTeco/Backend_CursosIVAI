@@ -20,7 +20,7 @@ public class Excel {
             String[] encabezados = {
                     "Id del Registro", "Nombre", "Apellidos", "Sujeto Obligado", "Teléfono", "Correo", "Id Curso", "Nombre del Curso",
                     "Lugar de Procedencia", "Grado de Estudios", "Orden de Gobierno", "Área de Adquisición",
-                    "Cargo Público", "Género", "Estado", "Fecha de Registro", "Desea Recibir Información", "Necesita un Intérprete"
+                    "Cargo Público", "Género", "Estado", "Fecha de Registro", "Desea Recibir Información", "Necesita un Intérprete", "Asistencia"
             };
     
             Workbook libro = new XSSFWorkbook(); 
@@ -54,6 +54,7 @@ public class Excel {
                 row.createCell(15).setCellValue(registro.getFecha());
                 row.createCell(16).setCellValue(registro.getRecibirInformacion());
                 row.createCell(17).setCellValue(registro.getInterprete());
+                row.createCell(18).setCellValue(registro.getAsistencia());
             }
     
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

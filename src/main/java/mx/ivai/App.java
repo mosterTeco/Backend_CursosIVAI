@@ -116,25 +116,13 @@ public class App {
                 response.header("Content-Disposition", "attachment; filename=\"registros_curso_" + idCurso + ".xlsx\"");
                 response.raw().getOutputStream().write(excelData);
                 response.raw().getOutputStream().flush();
-                return null; // No retorno texto, ya que estamos mandando un archivo
+                return null;
             } else {
                 response.status(500);
                 return "Error al generar el archivo Excel";
             }
         });
-        // post("/obtenerExcelRegistros", (request, response) -> {
-        // int cursoId = Integer.parseInt(request.queryParams("idCurso"));
-
-        // ArrayList<Registro> registros = Dao.obtenerRegistros();
-        // byte[] excelData = Excel.excelRegistros(registros,
-        // Dao.obtenerCurso(cursoId).getNombreCurso());
-
-        // response.type("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        // response.header("Content-Disposition", "attachment;
-        // filename=registros.xlsx");
-        // return excelData;
-        // });
-
+        
         post("/estado", (request, response) -> {
             response.type("application/json");
 
