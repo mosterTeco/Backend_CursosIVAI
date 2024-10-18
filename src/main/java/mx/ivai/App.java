@@ -82,6 +82,14 @@ public class App {
             return new Gson().toJson(tiposCurso);
         });
 
+        // Obtener los registros de un Curso
+        get("/obtenerRegistros/:idCurso", (request, response) -> {
+            response.type("application/json");
+            int idCurso = Integer.parseInt(request.params("idCurso"));
+            ArrayList<Registro> registros = Dao.obtenerRegistros(idCurso);
+            return new Gson().toJson(registros);
+        });
+
         // Obtener información de cursos registrados
         get("/obtenerCursos", (request, response) -> {
             response.type("application/json");
