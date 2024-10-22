@@ -216,7 +216,7 @@ public class Dao {
     private static String reducirCupo(int idCurso) {
         PreparedStatement stm = null;
         Connection conn = null;
-        int cupo = 0;
+        int cupoDisponible = 0;
         PreparedStatement ps = null;
         ResultSet rs = null;
         String msj = "";
@@ -227,12 +227,12 @@ public class Dao {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                cupo = rs.getInt("EstatusCupo") - 1;
+                cupoDisponible = rs.getInt("EstatusCupo") - 1;
             }
 
             query = "UPDATE curso SET EstatusCupo = ? where idCurso = ?";
             stm = conn.prepareStatement(query);
-            stm.setInt(1, cupo);
+            stm.setInt(1, cupoDisponible);
             stm.setInt(2, idCurso);
 
             if (stm.executeUpdate() > 0) {
@@ -581,7 +581,7 @@ public class Dao {
         return msj;
     }
 
-    public static String eliminarRegistro(int idRegistro) {
+    public static String eliminarRegistro(Registro registro) {
         PreparedStatement stm = null;
         Connection conn = null;
         String msj = "";
@@ -592,12 +592,13 @@ public class Dao {
             String sql = "DELETE FROM Registro WHERE IdRegistro = ?";
     
             stm = conn.prepareStatement(sql);
-            stm.setInt(1, idRegistro); 
+            stm.setInt(1, registro.getIdRegistro()); 
     
             if (stm.executeUpdate() > 0) {
                 msj = "Registro eliminado con éxito";
+                aumentarCupo(registro.getIdCurso());
             } else {
-                msj = "No se encontró el registro con IdRegistro: " + idRegistro;
+                msj = "No se encontró el registro con IdRegistro: " + registro.getIdRegistro();
             }
     
         } catch (Exception e) {
@@ -620,6 +621,56 @@ public class Dao {
             }
         }
     
+        return msj;
+    }
+
+    private static String aumentarCupo(int idCurso) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        int cupoDisponible = 0;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String msj = "";
+        conn = c.getConnection();
+        try {
+            String query = "SELECT EstatusCupo FROM curso WHERE idCurso = " + idCurso;
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                cupoDisponible = rs.getInt("EstatusCupo") + 1;
+            }
+
+            query = "UPDATE curso SET EstatusCupo = ? where idCurso = ?";
+            stm = conn.prepareStatement(query);
+            stm.setInt(1, cupoDisponible);
+            stm.setInt(2, idCurso);
+
+            if (stm.executeUpdate() > 0) {
+                msj = "Cupo aumentado con éxito";
+            } else {
+                msj = "No es posible aumentar el cupo";
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+            msj = "Error: " + e.getMessage();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
         return msj;
     }
 
