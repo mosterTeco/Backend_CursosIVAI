@@ -580,4 +580,90 @@ public class Dao {
         System.out.println("Datos recibidos: " + curso);
         return msj;
     }
+
+    public static String eliminarRegistro(int idRegistro) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        String msj = "";
+    
+        try {
+            conn = c.getConnection();
+    
+            String sql = "DELETE FROM Registro WHERE IdRegistro = ?";
+    
+            stm = conn.prepareStatement(sql);
+            stm.setInt(1, idRegistro); 
+    
+            if (stm.executeUpdate() > 0) {
+                msj = "Registro eliminado con éxito";
+            } else {
+                msj = "No se encontró el registro con IdRegistro: " + idRegistro;
+            }
+    
+        } catch (Exception e) {
+            System.out.println(e);
+            msj = "Error: " + e.getMessage();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+    
+        return msj;
+    }
+
+    public static String editarAsistencia(Registro registro) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        String msj = "";
+
+        conn = c.getConnection();
+
+        try {
+            String sql = "UPDATE Registro SET Asistencia = ? WHERE idRegistro = ?";
+
+            stm = conn.prepareStatement(sql);
+
+            stm.setString(1, registro.getAsistencia());
+            stm.setInt(2, registro.getIdRegistro());
+
+            if (stm.executeUpdate() > 0) {
+                msj = "Registro actualizado con exito";
+            } else {
+                msj = "No se pudo actualizar el registro";
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+            msj = "Error: " + e.getMessage();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        System.out.println("Datos recibidos: " + registro);
+        return msj;
+    }
 }
