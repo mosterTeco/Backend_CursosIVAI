@@ -185,5 +185,12 @@ public class App {
         });
         
 
+        delete("/eliminarRegistro", (request, response) -> {
+            response.type("application/json");
+            String payload = request.body();
+            Registro registro = gson.fromJson(payload, Registro.class);
+            String respuesta = Dao.eliminarRegistro(registro);
+            return respuesta;
+        });
     }
 }
