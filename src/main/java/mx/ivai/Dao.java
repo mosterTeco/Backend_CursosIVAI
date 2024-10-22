@@ -627,23 +627,23 @@ public class Dao {
         PreparedStatement stm = null;
         Connection conn = null;
         String msj = "";
-
+    
         conn = c.getConnection();
-
+    
         try {
             String sql = "UPDATE Registro SET Asistencia = ? WHERE idRegistro = ?";
-
+    
             stm = conn.prepareStatement(sql);
-
-            stm.setString(1, registro.getAsistencia());
+    
+            stm.setString(1, registro.getAsistencia()); 
             stm.setInt(2, registro.getIdRegistro());
-
+    
             if (stm.executeUpdate() > 0) {
-                msj = "Registro actualizado con exito";
+                msj = "Registro actualizado con éxito";
             } else {
                 msj = "No se pudo actualizar el registro";
             }
-
+    
         } catch (Exception e) {
             System.out.println(e);
             msj = "Error: " + e.getMessage();
@@ -666,4 +666,5 @@ public class Dao {
         System.out.println("Datos recibidos: " + registro);
         return msj;
     }
+    
 }

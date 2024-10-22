@@ -168,5 +168,22 @@ public class App {
             return respuesta;
         });
 
+        put("/actualizarRegistro", (request, response) -> {
+            response.type("application/json");
+        
+            String body = request.body();
+        
+            System.out.println("Datos recibidos en el backend: " + body);
+        
+            Gson gson = new Gson();
+        
+            Registro registro = gson.fromJson(body, Registro.class);
+        
+            String resultado = Dao.editarAsistencia(registro);
+        
+            return gson.toJson(Collections.singletonMap("mensaje", resultado));
+        });
+        
+
     }
 }
