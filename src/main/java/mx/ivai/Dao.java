@@ -459,7 +459,7 @@ public class Dao {
             stm.setString(13, curso.getValorCurricular());
 
             if (stm.executeUpdate() > 0)
-                msj = "Curso registrado con exito";
+                msj = "Curso registrado";
             else
                 msj = "Error al registrar el curso";
 

@@ -52,9 +52,18 @@ public class Excel {
                 row.createCell(13).setCellValue(registro.getGenero());
                 row.createCell(14).setCellValue(registro.getEstado());
                 row.createCell(15).setCellValue(registro.getFecha());
-                row.createCell(16).setCellValue(registro.getRecibirInformacion());
-                row.createCell(17).setCellValue(registro.getInterprete());
-                row.createCell(18).setCellValue(registro.getAsistencia());
+                if(registro.getRecibirInformacion().equals("true"))
+                    row.createCell(16).setCellValue("Sí");
+                else   
+                    row.createCell(16).setCellValue("No");
+                if(registro.getInterprete().equals("true"))
+                    row.createCell(17).setCellValue("Sí");
+                else   
+                    row.createCell(17).setCellValue("No");
+                if(registro.getAsistencia().equals("true"))
+                    row.createCell(18).setCellValue("Sí");
+                else   
+                    row.createCell(18).setCellValue("No");
             }
     
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
