@@ -717,5 +717,90 @@ public class Dao {
         System.out.println("Datos recibidos: " + registro);
         return msj;
     }
+
+    public static String editarNombreCurso(TipoCurso tipoCurso) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        String msj = "";
+    
+        conn = c.getConnection();
+    
+        try {
+            String sql = "UPDATE TIPOCURSO SET Tipo = ? WHERE Id = ?";
+    
+            stm = conn.prepareStatement(sql);
+    
+            stm.setString(1, tipoCurso.getTipo()); 
+            stm.setInt(2, tipoCurso.getId());
+    
+            if (stm.executeUpdate() > 0) {
+                msj = "Tipo de curso actualizado con éxito";
+            } else {
+                msj = "No se pudo actualizar el tipo de curso";
+            }
+    
+        } catch (Exception e) {
+            System.out.println(e);
+            msj = "Error: " + e.getMessage();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        System.out.println("Datos recibidos: " + tipoCurso);
+        return msj;
+    }
+
+    public static String eliminarTipoCurso(TipoCurso tipoCurso) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        String msj = "";
+    
+        try {
+            conn = c.getConnection();
+    
+            String sql = "DELETE FROM TIPOCURSO WHERE Id = ?";
+    
+            stm = conn.prepareStatement(sql);
+            stm.setInt(1, tipoCurso.getId()); 
+    
+            if (stm.executeUpdate() > 0) {
+                msj = "Tipo curso eliminado con exito";
+            } else {
+                msj = "Error al eliminar el tipo de curso";
+            }
+    
+        } catch (Exception e) {
+            System.out.println(e);
+            msj = "Error: " + e.getMessage();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return msj;
+    }
     
 }

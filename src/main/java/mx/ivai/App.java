@@ -3,6 +3,7 @@ package mx.ivai;
 import com.google.gson.Gson;
 
 import mx.ivai.POJO.Registro;
+import mx.ivai.POJO.TipoCurso;
 import mx.ivai.POJO.Usuario;
 import mx.ivai.POJO.Cursos;
 
@@ -191,6 +192,30 @@ public class App {
             Registro registro = gson.fromJson(payload, Registro.class);
             String respuesta = Dao.eliminarRegistro(registro);
             return respuesta;
+        });
+
+        delete("/eliminarTipoCurso", (request, response) -> {
+            response.type("application/json");
+            String payload = request.body();
+            TipoCurso registro = gson.fromJson(payload, TipoCurso.class);
+            String respuesta = Dao.eliminarTipoCurso(registro);
+            return respuesta;
+        });
+
+        put("/actualizarTipoCurso", (request, response) -> {
+            response.type("application/json");
+        
+            String body = request.body();
+        
+            System.out.println("Datos recibidos en el backend: " + body);
+        
+            Gson gson = new Gson();
+        
+            TipoCurso tipoCurso = gson.fromJson(body, TipoCurso.class);
+        
+            String resultado = Dao.editarNombreCurso(tipoCurso);
+        
+            return gson.toJson(Collections.singletonMap("mensaje", resultado));
         });
     }
 }
