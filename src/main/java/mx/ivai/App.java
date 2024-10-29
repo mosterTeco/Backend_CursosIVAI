@@ -131,7 +131,7 @@ public class App {
                 return "Error al generar el archivo Excel";
             }
         });
-        
+
         post("/estado", (request, response) -> {
             response.type("application/json");
 
@@ -171,20 +171,19 @@ public class App {
 
         put("/actualizarRegistro", (request, response) -> {
             response.type("application/json");
-        
+
             String body = request.body();
-        
+
             System.out.println("Datos recibidos en el backend: " + body);
-        
+
             Gson gson = new Gson();
-        
+
             Registro registro = gson.fromJson(body, Registro.class);
-        
+
             String resultado = Dao.editarAsistencia(registro);
-        
+
             return gson.toJson(Collections.singletonMap("mensaje", resultado));
         });
-        
 
         delete("/eliminarRegistro", (request, response) -> {
             response.type("application/json");
@@ -199,27 +198,31 @@ public class App {
             return new Gson().toJson(tipoCursos);
         });
 
-        delete("/eliminarTipoCurso", (request, response) -> {
+        post("/eliminarTipoCurso", (request, response) -> {
             response.type("application/json");
             String payload = request.body();
             TipoCurso registro = gson.fromJson(payload, TipoCurso.class);
             String respuesta = Dao.eliminarTipoCurso(registro);
-            return respuesta;
+
+            Map<String, String> jsonResponse = new HashMap<>();
+            jsonResponse.put("message", respuesta);
+
+            return gson.toJson(jsonResponse);
         });
 
         put("/actualizarTipoCurso", (request, response) -> {
             response.type("application/json");
-        
+
             String body = request.body();
-        
+
             System.out.println("Datos recibidos en el backend: " + body);
-        
+
             Gson gson = new Gson();
-        
+
             TipoCurso tipoCurso = gson.fromJson(body, TipoCurso.class);
-        
+
             String resultado = Dao.editarNombreCurso(tipoCurso);
-        
+
             return gson.toJson(Collections.singletonMap("mensaje", resultado));
         });
     }
