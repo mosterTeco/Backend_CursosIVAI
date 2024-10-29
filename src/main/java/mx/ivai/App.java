@@ -194,6 +194,11 @@ public class App {
             return respuesta;
         });
 
+        get("/obtenerTipoCurso", (request, response) -> {
+            ArrayList<TipoCurso> tipoCursos = Dao.obtenerTiposCursos();
+            return new Gson().toJson(tipoCursos);
+        });
+
         delete("/eliminarTipoCurso", (request, response) -> {
             response.type("application/json");
             String payload = request.body();

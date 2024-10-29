@@ -263,6 +263,48 @@ public class Dao {
         return msj;
     }
 
+    public static ArrayList<TipoCurso> obtenerTiposCursos() {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        ArrayList<TipoCurso> TiposCurso = new ArrayList<TipoCurso>();
+
+        conn = c.getConnection();
+
+        try {
+
+            String query = "SELECT * FROM TIPOCURSO";
+            ps = conn.prepareStatement(query);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                TipoCurso tipo = new TipoCurso(rs.getInt("Id"), rs.getString("Tipo"));
+                TiposCurso.add(tipo);
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Error al iniciar sesión: " + ex.toString());
+            ex.printStackTrace();
+
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
+        return TiposCurso;
+
+    }
+
     // Método para obtener el listado de cursos que se pueden impartir
     public static ArrayList<String> obtenerTiposCurso() {
         PreparedStatement stm = null;
