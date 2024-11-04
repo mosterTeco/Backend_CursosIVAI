@@ -83,6 +83,12 @@ public class App {
             return new Gson().toJson(tiposCurso);
         });
 
+        get("/tiposs", (request, response) -> {
+            response.type("application/json");
+            ArrayList<String> tiposCurso = Dao.obtenerTiposCurso();
+            return new Gson().toJson(tiposCurso);
+        });
+
         // Obtener los registros de un Curso
         get("/obtenerRegistros/:idCurso", (request, response) -> {
             response.type("application/json");
@@ -195,6 +201,7 @@ public class App {
 
         get("/obtenerTipoCurso", (request, response) -> {
             ArrayList<TipoCurso> tipoCursos = Dao.obtenerTiposCursos();
+            response.type("application/json");
             return new Gson().toJson(tipoCursos);
         });
 
@@ -212,18 +219,16 @@ public class App {
 
         put("/actualizarTipoCurso", (request, response) -> {
             response.type("application/json");
-
+        
             String body = request.body();
-
-            System.out.println("Datos recibidos en el backend: " + body);
-
+            System.out.println("Datos recibidos en el backend: " + body);  
+        
             Gson gson = new Gson();
-
             TipoCurso tipoCurso = gson.fromJson(body, TipoCurso.class);
-
+        
             String resultado = Dao.editarNombreCurso(tipoCurso);
-
             return gson.toJson(Collections.singletonMap("mensaje", resultado));
         });
+        
     }
 }
