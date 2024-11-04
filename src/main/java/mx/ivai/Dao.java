@@ -565,6 +565,8 @@ public class Dao {
         return estados;
     }
 
+    
+
     public static String editarCurso(Cursos curso) {
         PreparedStatement stm = null;
         Connection conn = null;
@@ -845,4 +847,46 @@ public class Dao {
         return msj;
     }
     
+    public static String registrarTipoCurso(String nombreTipoCurso) {
+        PreparedStatement stm = null;
+        Connection conn = null;
+        String msj = "";
+
+        conn = c.getConnection();
+
+        try {
+            String sql = "INSERT INTO tipocurso (tipo) values (?)";
+
+            stm = conn.prepareStatement(sql);
+
+            // Asignación de valores a los parámetros
+            stm.setString(1, nombreTipoCurso);
+
+            if (stm.executeUpdate() > 0)
+                msj = "Tipo de Curso registrado";
+            else
+                msj = "Error al registrar el tipo de curso";
+
+        } catch (Exception e) {
+            System.out.println(e);
+            msj = "Error: " + e.getMessage();
+        } finally {
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+                stm = null;
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return msj;
+    }    
 }

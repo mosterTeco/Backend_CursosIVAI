@@ -229,6 +229,18 @@ public class App {
             String resultado = Dao.editarNombreCurso(tipoCurso);
             return gson.toJson(Collections.singletonMap("mensaje", resultado));
         });
-        
+
+        post("/registroTipoCurso", (request, response) -> {
+            response.type("application/json");
+
+            String payload = request.body();
+            TipoCurso tipoCurso = gson.fromJson(payload, TipoCurso.class);
+            System.out.println(tipoCurso.toString());
+
+            String mensaje = Dao.registrarTipoCurso(tipoCurso.getTipo());
+
+            return mensaje;
+        });
+
     }
 }
