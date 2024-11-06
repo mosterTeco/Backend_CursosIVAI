@@ -202,7 +202,7 @@ public class App {
 
             String resultado = Dao.editarAsistencia(registro);
 
-            return gson.toJson(Collections.singletonMap("mensaje", resultado));
+            return resultado;
         });
 
         delete("/eliminarRegistro", (request, response) -> {
@@ -249,7 +249,6 @@ public class App {
 
             String payload = request.body();
             TipoCurso tipoCurso = gson.fromJson(payload, TipoCurso.class);
-            System.out.println(tipoCurso.toString());
 
             String mensaje = Dao.registrarTipoCurso(tipoCurso.getTipo());
 

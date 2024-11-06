@@ -26,17 +26,15 @@ public class Mail {
         Session sesion = Session.getDefaultInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("dtistecopruebas2024@gmail.com", "cwsuggfzvhyskvbw");
+                return new PasswordAuthentication("cursos.ivai@gmail.com", "zyykxeyxuijpcqxy");
             }
         });
 
-        
-        
         MimeMessage message = new MimeMessage(sesion);
         try {
             String htmlContent = "";
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(registro.getCorreo(), true));
-            message.setSubject("Prueba");
+            message.setSubject("Registro Curso");
             
             if(curso.getModalidad().equals("Presencial")){
                 htmlContent = "<h2>Apreciado(a) " + registro.getNombre() + " " + registro.getApellidos() + "</h2>"
