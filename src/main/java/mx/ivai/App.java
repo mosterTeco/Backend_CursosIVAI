@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+
 /**
  * Hello world!
  *
@@ -22,7 +25,12 @@ import java.util.Map;
 public class App {
     static Gson gson = new Gson();
 
+    private static final String SECRET_KEY = "miClaveSecreta";
+
     public static void main(String[] args) {
+
+        CorsMiddleware.enableCORS();
+
         options("/*", (request, response) -> {
 
             String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
@@ -47,21 +55,27 @@ public class App {
 
             try {
                 Usuario usuario = gson.fromJson(payload, Usuario.class);
-                System.out.println("Usuario: " + usuario.getUsuario());
-                System.out.println("Contrasenia: " + usuario.getPassword());
+                boolean esValido = Dao.usuarioRegistrado(usuario.getUsuario(), usuario.getPassword());
 
-                boolean respuesta = Dao.usuarioRegistrado(usuario.getUsuario(), usuario.getPassword());
+                Map<String, String> respuestaJson = new HashMap<>();
+                if (esValido) {
+                    Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+                    String token = JWT.create()
+                            .withIssuer("miApp")
+                            .withClaim("usuario", usuario.getUsuario())
+                            .sign(algorithm);
 
-                String mensaje = respuesta ? "Usuario correcto" : "Usuario incorrecto";
-
-                HashMap<String, String> respuestaJson = new HashMap<>();
-                respuestaJson.put("mensaje", mensaje);
+                    respuestaJson.put("mensaje", "Usuario correcto");
+                    respuestaJson.put("token", token); 
+                } else {
+                    respuestaJson.put("mensaje", "Usuario incorrecto");
+                }
 
                 return gson.toJson(respuestaJson);
 
             } catch (Exception e) {
                 response.status(500);
-                HashMap<String, String> errorJson = new HashMap<>();
+                Map<String, String> errorJson = new HashMap<>();
                 errorJson.put("mensaje", "Error al procesar la solicitud");
                 errorJson.put("error", e.getMessage());
                 return gson.toJson(errorJson);
@@ -219,13 +233,13 @@ public class App {
 
         put("/actualizarTipoCurso", (request, response) -> {
             response.type("application/json");
-        
+
             String body = request.body();
-            System.out.println("Datos recibidos en el backend: " + body);  
-        
+            System.out.println("Datos recibidos en el backend: " + body);
+
             Gson gson = new Gson();
             TipoCurso tipoCurso = gson.fromJson(body, TipoCurso.class);
-        
+
             String resultado = Dao.editarNombreCurso(tipoCurso);
             return gson.toJson(Collections.singletonMap("mensaje", resultado));
         });
