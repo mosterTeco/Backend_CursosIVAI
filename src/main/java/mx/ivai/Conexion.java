@@ -8,7 +8,7 @@ public class Conexion {
     public static String url="jdbc:mysql://localhost:3306/dbo";
     public static String Drivername="com.mysql.cj.jdbc.Driver";
     public static String username="IVAI_db";
-    public static String password="1234";
+    public static String password="trans_ivai";
 
     private static Connection conexion=null;
 
