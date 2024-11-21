@@ -11,7 +11,6 @@ public class CorsMiddleware {
             if (accessControlRequestHeaders != null) {
                 response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
             }
-
             String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
             if (accessControlRequestMethod != null) {
                 response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
@@ -19,6 +18,11 @@ public class CorsMiddleware {
             return "OK";
         });
 
-        before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+        before((request, response) -> {
+            response.header("Access-Control-Allow-Origin", "*"); // Permitir todos los orígenes
+            response.header("Access-Control-Allow-Headers", "Authorization, Content-Type, X-Requested-With");
+            response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            response.header("Access-Control-Expose-Headers", "Authorization");
+        });
     }
 }
