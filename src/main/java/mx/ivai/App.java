@@ -33,6 +33,11 @@ import javax.servlet.http.Part;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
+
 /**
  * Hello world!
  *
@@ -41,6 +46,24 @@ public class App {
     static Gson gson = new Gson();
 
     private static final String SECRET_KEY = "miClaveSecreta";
+
+    private static byte[] agregarTextoAPNG(byte[] imagenBytes, String texto) throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(imagenBytes);
+        BufferedImage imagen = ImageIO.read(bais);
+    
+        // Crear una nueva imagen con texto
+        Graphics2D g2d = imagen.createGraphics();
+        g2d.setFont(new Font("Arial", Font.BOLD, 30));
+        g2d.setColor(Color.BLACK);
+        g2d.drawString(texto, 20, imagen.getHeight() - 50); // Posición del texto
+        g2d.dispose();
+    
+        // Convertir la imagen modificada de vuelta a bytes
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(imagen, "png", baos);
+        return baos.toByteArray();
+    }
+    
 
     public static byte[] inputStreamToByteArray(InputStream inputStream) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -199,7 +222,11 @@ public class App {
             String mimeType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(archivoBytes));
 
             if (mimeType == null) {
-                mimeType = "application/pdf"; 
+                mimeType = "application/pdf";
+            }
+
+            if (mimeType.equals("image/png")) {
+                archivoBytes = agregarTextoAPNG(archivoBytes, "Angel");
             }
 
             // Configurar headers
@@ -207,7 +234,7 @@ public class App {
             response.header("Content-Disposition",
                     "attachment; filename=\"archivo." + (mimeType.contains("pdf") ? "pdf" : "png") + "\"");
 
-            // Enviar archivo
+            // Enviar archivo modificado
             OutputStream os = response.raw().getOutputStream();
             os.write(archivoBytes);
             os.flush();
