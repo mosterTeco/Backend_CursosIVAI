@@ -14,7 +14,6 @@ public class Dao {
 
     private static Conexion c = new Conexion();
 
-    // !METODO QUE RETORNA OBJETO CON LOS DATOS DEL USUARIO
     public static Usuario datosUsuario(String correoUsuario) {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -476,21 +475,20 @@ public class Dao {
         PreparedStatement stm = null;
         Connection conn = null;
         String msj = "";
-
+    
         conn = c.getConnection();
-
+    
         try {
-            String sql = "INSERT INTO Curso (NombreCurso, Fecha, Hora, Imparte, Cupo, EstatusCupo, EstatusCurso, Modalidad, Direccion, CorreoSeguimiento, Tipo, Curso, LigaTeams, ValorCurricular) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,'cursos.ivai@gmail.com', ?, ?, ?, ? )";
-
+            String sql = "INSERT INTO Curso (NombreCurso, Fecha, Hora, Imparte, Cupo, EstatusCupo, EstatusCurso, Modalidad, Direccion, CorreoSeguimiento, Tipo, Curso, LigaTeams, ValorCurricular, Constancia) "
+                       + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'cursos.ivai@gmail.com', ?, ?, ?, ?, ?)";
+    
             stm = conn.prepareStatement(sql);
-
-            // Asignación de valores a los parámetros
+    
             stm.setString(1, curso.getNombreCurso());
-            stm.setString(2, curso.getFecha()); // Conversión de LocalDateTime a Timestamp
+            stm.setString(2, curso.getFecha());
             stm.setString(3, curso.getHora());
             stm.setString(4, curso.getImparte());
-            stm.setInt(5, curso.getEstatusCupo());
+            stm.setInt(5, curso.getCupo());
             stm.setInt(6, curso.getEstatusCupo());
             stm.setString(7, curso.getEstatusCurso());
             stm.setString(8, curso.getModalidad());
@@ -499,34 +497,28 @@ public class Dao {
             stm.setString(11, curso.getCurso());
             stm.setString(12, curso.getLigaTeams());
             stm.setString(13, curso.getValorCurricular());
-
+            
+            stm.setBytes(14, curso.getConstancia());
+    
             if (stm.executeUpdate() > 0)
                 msj = "Curso registrado";
             else
                 msj = "Error al registrar el curso";
-
+    
         } catch (Exception e) {
             System.out.println(e);
             msj = "Error: " + e.getMessage();
         } finally {
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-                stm = null;
-            }
             try {
-                if (conn != null) {
-                    conn.close();
-                }
+                if (stm != null) stm.close();
+                if (conn != null) conn.close();
             } catch (Exception e) {
                 System.out.println(e);
             }
         }
         return msj;
     }
+    
 
     // Método que retorna todos los estados
     public static List<String> obtenerEstados() {
@@ -889,4 +881,79 @@ public class Dao {
         }
         return msj;
     }    
+
+    public static List<String> obtenerAsistentes(Integer idCurso) {
+        List<String> nombreAsistentes = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = c.getConnection();
+            String query = "SELECT CONCAT(Nombre, ' ', Apellidos) as Nombre FROM Registro WHERE Asistencia = 'true' AND IdCurso = ?";
+            ps = conn.prepareStatement(query);
+            ps.setInt(0, idCurso);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                nombreAsistentes.add(rs.getString("Nombre"));
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Error al obtener los nombres de los asistentes: " + ex.toString());
+            ex.printStackTrace();
+
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
+        return nombreAsistentes;
+    }
+
+    public static byte[] obtenerConstancia(Integer idCurso) {
+        byte[] constancia = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = c.getConnection();
+            String query = "SELECT Constancia FROM Curso WHERE idCurso = ?";
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, idCurso);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                constancia = rs.getBytes("Constancia");
+            }
+
+        } catch (Exception ex) {
+            System.out.println("Error al obtener al obtener la constancia: " + ex.toString());
+            ex.printStackTrace();
+
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
+                if (conn != null)
+                    conn.close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
+        return constancia;
+    }
+
 }

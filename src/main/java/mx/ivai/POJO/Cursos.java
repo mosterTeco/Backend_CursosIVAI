@@ -16,6 +16,7 @@ public class Cursos {
     private String curso;
     private String ligaTeams;
     private String valorCurricular;
+    private byte[] constancia;
 
     public Cursos() {
     }
@@ -23,7 +24,7 @@ public class Cursos {
 
     public Cursos(int idCurso, String nombreCurso, String fecha, String hora, String imparte, int cupo, int estatusCupo,
             String estatusCurso, String modalidad, String direccion, String correoSeguimiento, String tipo, String curso, String ligaTeams,
-            String valorCurricular) {
+            String valorCurricular, byte[] constancia) {
         this.idCurso = idCurso;
         this.nombreCurso = nombreCurso;
         this.fecha = fecha;
@@ -39,6 +40,7 @@ public class Cursos {
         this.curso = curso;
         this.ligaTeams = ligaTeams;
         this.valorCurricular = valorCurricular;
+        this.constancia = constancia;
     }
 
 
@@ -143,6 +145,10 @@ public class Cursos {
         this.cupo = cupo;
     }
 
+    public void setConstancia(byte[] constancia) {
+        this.constancia = constancia;
+    }
+
     public int getEstatusCupo() {
         return estatusCupo;
     }
@@ -168,6 +174,10 @@ public class Cursos {
 
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+
+    public byte[] getConstancia(){
+        return constancia;
     }
     
     @Override

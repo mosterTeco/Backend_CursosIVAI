@@ -1,6 +1,8 @@
 package mx.ivai;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import mx.ivai.POJO.Registro;
 import mx.ivai.POJO.TipoCurso;
@@ -9,11 +11,22 @@ import mx.ivai.POJO.Cursos;
 
 import static spark.Spark.*;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.http.Part;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -27,41 +40,24 @@ public class App {
 
     private static final String SECRET_KEY = "miClaveSecreta";
 
+    public static byte[] inputStreamToByteArray(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int bytesRead;
+        byte[] data = new byte[4096];
+
+        while ((bytesRead = inputStream.read(data, 0, data.length)) != -1) {
+            buffer.write(data, 0, bytesRead);
+        }
+
+        return buffer.toByteArray();
+    }
+
     public static void main(String[] args) {
 
         CorsMiddleware.enableCORS();
 
-        post("/validacion", (request, response) -> {
-            response.type("application/json");
-            String payload = request.body();
-
-            try {
-                Usuario usuario = gson.fromJson(payload, Usuario.class);
-                boolean esValido = Dao.usuarioRegistrado(usuario.getUsuario(), usuario.getPassword());
-
-                Map<String, String> respuestaJson = new HashMap<>();
-                if (esValido) {
-                    Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
-                    String token = JWT.create()
-                            .withIssuer("miApp")
-                            .withClaim("usuario", usuario.getUsuario())
-                            .sign(algorithm);
-
-                    respuestaJson.put("mensaje", "Usuario correcto");
-                    respuestaJson.put("token", token); 
-                } else {
-                    respuestaJson.put("mensaje", "Usuario incorrecto");
-                }
-
-                return gson.toJson(respuestaJson);
-
-            } catch (Exception e) {
-                response.status(500);
-                Map<String, String> errorJson = new HashMap<>();
-                errorJson.put("mensaje", "Error al procesar la solicitud");
-                errorJson.put("error", e.getMessage());
-                return gson.toJson(errorJson);
-            }
+        before("/registroCurso", (request, response) -> {
+            request.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/tmp"));
         });
 
         post("/registro", (request, response) -> {
@@ -101,18 +97,80 @@ public class App {
         });
 
         // Registrar Curso (Administrador)
+        // post("/registroCurso", (request, response) -> {
+        // response.type("application/json");
+
+        // Part filePart = request.raw().getPart("constancia");
+        // byte[] constanciaBytes = null;
+
+        // if (filePart != null) {
+        // InputStream fileContent = filePart.getInputStream();
+        // constanciaBytes = inputStreamToByteArray(fileContent);
+        // }
+
+        // Cursos curso = gson.fromJson(request.queryParams("curso"), Cursos.class);
+        // System.out.println(curso);
+        // curso.setConstancia(constanciaBytes);
+        // System.out.println(curso);
+        // String mensaje = Dao.registrarCurso(curso);
+
+        // Map<String, String> respuesta = new HashMap<>();
+        // respuesta.put("mensaje", mensaje);
+
+        // return gson.toJson(respuesta);
+        // });
+
         post("/registroCurso", (request, response) -> {
             response.type("application/json");
 
-            String payload = request.body();
-            Cursos curso = gson.fromJson(payload, Cursos.class);
+            try {
+                String body = request.body();
+                JsonObject jsonObject = JsonParser.parseString(body).getAsJsonObject();
 
-            String mensaje = Dao.registrarCurso(curso);
+                Cursos curso = gson.fromJson(jsonObject.get("curso"), Cursos.class);
 
-            Map<String, String> respuesta = new HashMap<>();
-            respuesta.put("mensaje", mensaje);
+                String constanciaBase64 = jsonObject.get("constancia").getAsString();
 
-            return gson.toJson(respuesta);
+                if (constanciaBase64 != null && !constanciaBase64.isEmpty()) {
+                    byte[] constanciaBytes = Base64.getDecoder().decode(constanciaBase64);
+
+                    curso.setConstancia(constanciaBytes);
+                }
+
+                String mensaje = Dao.registrarCurso(curso);
+
+                Map<String, String> respuesta = new HashMap<>();
+                respuesta.put("mensaje", mensaje);
+                return gson.toJson(respuesta);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.status(500);
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Error interno: " + e.getMessage());
+                return gson.toJson(errorResponse);
+            }
+        });
+
+        get("/obtenerPdf/:idCurso", (request, response) -> {
+            int idCurso = Integer.parseInt(request.params("idCurso"));
+            byte[] constanciaBytes = Dao.obtenerConstancia(idCurso);
+
+            if (constanciaBytes == null) {
+                response.status(404);
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("error", "Constancia no encontrada");
+                return gson.toJson(errorResponse);
+            }
+
+            response.type("application/pdf");
+            response.header("Content-Disposition", "inline; filename=\"constancia_" + idCurso + ".pdf\"");
+
+            OutputStream outputStream = response.raw().getOutputStream();
+            outputStream.write(constanciaBytes);
+            outputStream.flush();
+
+            return response.raw();
         });
 
         // Petición para obtener archivo excel de los regitros
@@ -235,6 +293,17 @@ public class App {
             String mensaje = Dao.registrarTipoCurso(tipoCurso.getTipo());
 
             return mensaje;
+        });
+
+        get("/mandarConstancias/:idCurso", (request, response) -> {
+            response.type("application/json");
+            int idCurso = Integer.parseInt(request.params("idCurso"));
+            List<String> nombreAsistentes = Dao.obtenerAsistentes(idCurso);
+
+            Gson gson = new Gson();
+            String jsonEstados = gson.toJson(nombreAsistentes);
+
+            return jsonEstados;
         });
 
     }
