@@ -887,35 +887,32 @@ public class Dao {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-
+    
         try {
             conn = c.getConnection();
             String query = "SELECT CONCAT(Nombre, ' ', Apellidos) as Nombre FROM Registro WHERE Asistencia = 'true' AND IdCurso = ?";
             ps = conn.prepareStatement(query);
-            ps.setInt(0, idCurso);
+            ps.setInt(1, idCurso);  // Corregido el índice del parámetro
             rs = ps.executeQuery();
-
+    
             while (rs.next()) {
                 nombreAsistentes.add(rs.getString("Nombre"));
             }
-
+    
         } catch (Exception ex) {
-            System.out.println("Error al obtener los nombres de los asistentes: " + ex.toString());
+            System.out.println("Error al obtener los nombres de los asistentes: " + ex.getMessage());
             ex.printStackTrace();
-
+    
         } finally {
             try {
-                if (rs != null)
-                    rs.close();
-                if (ps != null)
-                    ps.close();
-                if (conn != null)
-                    conn.close();
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
             } catch (Exception e) {
                 System.out.println(e);
             }
         }
-
+    
         return nombreAsistentes;
     }
 

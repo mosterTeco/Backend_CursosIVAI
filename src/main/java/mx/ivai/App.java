@@ -37,6 +37,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Hello world!
@@ -51,19 +53,16 @@ public class App {
         ByteArrayInputStream bais = new ByteArrayInputStream(imagenBytes);
         BufferedImage imagen = ImageIO.read(bais);
     
-        // Crear una nueva imagen con texto
         Graphics2D g2d = imagen.createGraphics();
         g2d.setFont(new Font("Arial", Font.BOLD, 30));
         g2d.setColor(Color.BLACK);
-        g2d.drawString(texto, 20, imagen.getHeight() - 50); // Posición del texto
+        g2d.drawString(texto, 50, imagen.getHeight() - 50); 
         g2d.dispose();
     
-        // Convertir la imagen modificada de vuelta a bytes
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(imagen, "png", baos);
         return baos.toByteArray();
     }
-    
 
     public static byte[] inputStreamToByteArray(InputStream inputStream) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -133,6 +132,22 @@ public class App {
             return new Gson().toJson(tiposCurso);
         });
 
+        get("/obtenerAsistentes/:idCurso", (request, response) -> {
+            response.type("application/json");
+        
+            try {
+                int idCurso = Integer.parseInt(request.params("idCurso"));
+                List<String> asistentes = Dao.obtenerAsistentes(idCurso);
+                return new Gson().toJson(asistentes);
+            } catch (NumberFormatException e) {
+                response.status(400);
+                return new Gson().toJson("Error: idCurso debe ser un número válido.");
+            } catch (Exception e) {
+                response.status(500); 
+                return new Gson().toJson("Error interno en el servidor: " + e.getMessage());
+            }
+        });
+        
         get("/tiposs", (request, response) -> {
             response.type("application/json");
             ArrayList<String> tiposCurso = Dao.obtenerTiposCurso();
@@ -212,31 +227,38 @@ public class App {
 
         get("/obtenerPdf/:idCurso", (request, response) -> {
             int idCurso = Integer.parseInt(request.params("idCurso"));
-            byte[] archivoBytes = Dao.obtenerConstancia(idCurso);
+            List<String> asistentes = Dao.obtenerAsistentes(idCurso);
 
-            if (archivoBytes == null || archivoBytes.length == 0) {
+            if (asistentes.isEmpty()) {
                 response.status(404);
-                return "Archivo no encontrado";
+                return "No hay asistentes registrados para este curso.";
             }
 
-            String mimeType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(archivoBytes));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ZipOutputStream zos = new ZipOutputStream(baos);
 
-            if (mimeType == null) {
-                mimeType = "application/pdf";
+            for (String asistente : asistentes) {
+                byte[] archivoBytes = Dao.obtenerConstancia(idCurso);
+
+                if (archivoBytes == null || archivoBytes.length == 0) {
+                    continue;
+                }
+
+                archivoBytes = agregarTextoAPNG(archivoBytes, asistente);
+
+                ZipEntry entry = new ZipEntry(asistente.replace(" ", "_") + ".png");
+                zos.putNextEntry(entry);
+                zos.write(archivoBytes);
+                zos.closeEntry();
             }
 
-            if (mimeType.equals("image/png")) {
-                archivoBytes = agregarTextoAPNG(archivoBytes, "Angel");
-            }
+            zos.close();
 
-            // Configurar headers
-            response.type(mimeType);
-            response.header("Content-Disposition",
-                    "attachment; filename=\"archivo." + (mimeType.contains("pdf") ? "pdf" : "png") + "\"");
+            response.type("application/zip");
+            response.header("Content-Disposition", "attachment; filename=\"constancias.zip\"");
 
-            // Enviar archivo modificado
             OutputStream os = response.raw().getOutputStream();
-            os.write(archivoBytes);
+            os.write(baos.toByteArray());
             os.flush();
             os.close();
 
@@ -312,7 +334,7 @@ public class App {
 
             String resultado = Dao.editarAsistencia(registro);
 
-            return resultado;
+            return new Gson().toJson(Collections.singletonMap("mensaje", resultado));
         });
 
         delete("/eliminarRegistro", (request, response) -> {
