@@ -12,11 +12,13 @@ import mx.ivai.POJO.Cursos;
 import static spark.Spark.*;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -58,6 +60,39 @@ public class App {
 
         before("/registroCurso", (request, response) -> {
             request.raw().setAttribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/tmp"));
+        });
+
+        post("/validacion", (request, response) -> {
+            response.type("application/json");
+            String payload = request.body();
+
+            try {
+                Usuario usuario = gson.fromJson(payload, Usuario.class);
+                boolean esValido = Dao.usuarioRegistrado(usuario.getUsuario(), usuario.getPassword());
+
+                Map<String, String> respuestaJson = new HashMap<>();
+                if (esValido) {
+                    Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+                    String token = JWT.create()
+                            .withIssuer("miApp")
+                            .withClaim("usuario", usuario.getUsuario())
+                            .sign(algorithm);
+
+                    respuestaJson.put("mensaje", "Usuario correcto");
+                    respuestaJson.put("token", token);
+                } else {
+                    respuestaJson.put("mensaje", "Usuario incorrecto");
+                }
+
+                return gson.toJson(respuestaJson);
+
+            } catch (Exception e) {
+                response.status(500);
+                Map<String, String> errorJson = new HashMap<>();
+                errorJson.put("mensaje", "Error al procesar la solicitud");
+                errorJson.put("error", e.getMessage());
+                return gson.toJson(errorJson);
+            }
         });
 
         post("/registro", (request, response) -> {
@@ -154,21 +189,29 @@ public class App {
 
         get("/obtenerPdf/:idCurso", (request, response) -> {
             int idCurso = Integer.parseInt(request.params("idCurso"));
-            byte[] constanciaBytes = Dao.obtenerConstancia(idCurso);
+            byte[] archivoBytes = Dao.obtenerConstancia(idCurso);
 
-            if (constanciaBytes == null) {
+            if (archivoBytes == null || archivoBytes.length == 0) {
                 response.status(404);
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("error", "Constancia no encontrada");
-                return gson.toJson(errorResponse);
+                return "Archivo no encontrado";
             }
 
-            response.type("application/pdf");
-            response.header("Content-Disposition", "inline; filename=\"constancia_" + idCurso + ".pdf\"");
+            String mimeType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(archivoBytes));
 
-            OutputStream outputStream = response.raw().getOutputStream();
-            outputStream.write(constanciaBytes);
-            outputStream.flush();
+            if (mimeType == null) {
+                mimeType = "application/pdf"; 
+            }
+
+            // Configurar headers
+            response.type(mimeType);
+            response.header("Content-Disposition",
+                    "attachment; filename=\"archivo." + (mimeType.contains("pdf") ? "pdf" : "png") + "\"");
+
+            // Enviar archivo
+            OutputStream os = response.raw().getOutputStream();
+            os.write(archivoBytes);
+            os.flush();
+            os.close();
 
             return response.raw();
         });
