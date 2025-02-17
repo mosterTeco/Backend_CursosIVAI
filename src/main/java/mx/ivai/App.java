@@ -54,16 +54,25 @@ public class App {
         BufferedImage imagen = ImageIO.read(bais);
     
         Graphics2D g2d = imagen.createGraphics();
-        g2d.setFont(new Font("Arial", Font.BOLD, 30));
+        g2d.setFont(new Font("Arial", Font.BOLD, 55));
         g2d.setColor(Color.BLACK);
-        g2d.drawString(texto, 50, imagen.getHeight() - 50); 
+    
+        // Obtener las métricas de la fuente
+        FontMetrics fm = g2d.getFontMetrics();
+        int textWidth = fm.stringWidth(texto);
+    
+        // Calcular la posición X centrada
+        int x = (imagen.getWidth() - textWidth) / 2;
+        int y = 540; // Posición Y fija
+    
+        g2d.drawString(texto, x, y);
         g2d.dispose();
     
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(imagen, "png", baos);
         return baos.toByteArray();
     }
-
+    
     public static byte[] inputStreamToByteArray(InputStream inputStream) throws IOException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int bytesRead;
