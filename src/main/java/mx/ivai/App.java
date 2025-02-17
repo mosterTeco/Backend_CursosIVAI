@@ -265,6 +265,45 @@ public class App {
             return response.raw();
         });
 
+
+
+        get("/enviarConstancias/:idCurso", (request, response) -> {
+            int idCurso = Integer.parseInt(request.params("idCurso"));
+        
+            // Obtiene la información del curso
+            Cursos curso = Dao.obtenerCurso(idCurso);
+            if (curso == null) {
+                response.status(404);
+                return "Curso no encontrado";
+            }
+        
+            // Obtiene los registros de los asistentes (con su correo, nombre, etc.)
+            List<Registro> registros = Dao.obtenerRegistrosAsistentes(idCurso);
+            if (registros.isEmpty()) {
+                response.status(404);
+                return "No hay asistentes registrados para este curso.";
+            }
+        
+            for (Registro registro : registros) {
+                // Obtiene los bytes de la constancia (por ejemplo, una imagen base)
+                byte[] archivoBytes = Dao.obtenerConstancia(idCurso);
+                if (archivoBytes == null || archivoBytes.length == 0) {
+                    continue;
+                }
+                
+                // Agrega el nombre del asistente sobre la imagen (puedes implementar esta función según tus necesidades)
+                String nombreCompleto = registro.getNombre() + " " + registro.getApellidos();
+                archivoBytes = agregarTextoAPNG(archivoBytes, nombreCompleto);
+                
+                // Envía el correo con la constancia adjunta
+                MailConstancia.inicializarMail(registro, curso, archivoBytes);
+            }
+        
+            response.type("text/plain");
+            return "Correos enviados exitosamente";
+        });
+
+
         // Petición para obtener archivo excel de los regitros
         get("/obtenerExcelRegistros/:idCurso", (request, response) -> {
             int idCurso = Integer.parseInt(request.params("idCurso"));

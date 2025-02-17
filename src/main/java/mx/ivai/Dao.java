@@ -881,6 +881,7 @@ public class Dao {
         }
         return msj;
     }    
+    
 
     public static List<String> obtenerAsistentes(Integer idCurso) {
         List<String> nombreAsistentes = new ArrayList<>();
@@ -890,7 +891,7 @@ public class Dao {
     
         try {
             conn = c.getConnection();
-            String query = "SELECT CONCAT(Nombre, ' ', Apellidos) as Nombre FROM Registro WHERE Asistencia = 'true' AND IdCurso = ?";
+            String query = "SELECT CONCAT(Nombre, ' ', Apellidos) as Nombre, FROM Registro WHERE Asistencia = 'true' AND IdCurso = ?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, idCurso);  // Corregido el índice del parámetro
             rs = ps.executeQuery();
@@ -915,6 +916,50 @@ public class Dao {
     
         return nombreAsistentes;
     }
+
+
+     public static List<Registro> obtenerRegistrosAsistentes(Integer idCurso) {
+        List<Registro> registros = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = Conexion.getConnection();
+            String query = "SELECT * FROM Registro WHERE Asistencia = 'true' AND IdCurso = ?";
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, idCurso);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Registro registro = new Registro();
+                registro.setNombre(rs.getString("Nombre"));
+                registro.setApellidos(rs.getString("Apellidos"));
+                registro.setCorreo(rs.getString("Correo"));
+                // Si tu clase Registro tiene más campos, asigna los valores correspondientes
+                registros.add(registro);
+            }
+        } catch (Exception ex) {
+            System.out.println("Error al obtener los registros de asistentes: " + ex.getMessage());
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                System.out.println("Error al cerrar recursos: " + e.getMessage());
+            }
+        }
+        return registros;
+    }
+
+
+
+
+
+
+
 
     public static byte[] obtenerConstancia(Integer idCurso) {
         byte[] constancia = null;
@@ -954,3 +999,5 @@ public class Dao {
     }
 
 }
+
+
