@@ -3,6 +3,8 @@ package mx.ivai;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.spi.DirStateFactory.Result;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -557,17 +559,34 @@ public class Dao {
         return estados;
     }
 
-    
-
     public static String editarCurso(Cursos curso) {
         PreparedStatement stm = null;
         Connection conn = null;
+        ResultSet rs = null;
         String msj = "";
+        Integer cupo = 0;
+        Integer restantes = 0;
+        Integer diferencia = 0;
 
         conn = c.getConnection();
 
         try {
-            String sql = "UPDATE Curso SET NombreCurso = ?, Fecha = ?, Hora = ?, Imparte = ?, EstatusCupo = ?, EstatusCurso = ?, "
+            String query = "SELECT Cupo, EstatusCupo FROM Curso WHERE idCurso = ?";
+            stm = conn.prepareStatement(query);
+            stm.setInt(1, curso.getIdCurso());
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                cupo = rs.getInt("Cupo");
+                restantes = rs.getInt("EstatusCupo");
+            }
+            diferencia = cupo - restantes;
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            Integer cupoFinal = curso.getCupo() - diferencia;
+            String sql = "UPDATE Curso SET NombreCurso = ?, Fecha = ?, Hora = ?, Imparte = ?, Cupo = ?, EstatusCupo = ?, EstatusCurso = ?, "
                     + " Modalidad = ?, Direccion = ?, CorreoSeguimiento = ?, Tipo = ?, Curso = ?, LigaTeams = ?, ValorCurricular = ?"
                     + "WHERE IdCurso = ?";
 
@@ -577,16 +596,17 @@ public class Dao {
             stm.setString(2, curso.getFecha());
             stm.setString(3, curso.getHora());
             stm.setString(4, curso.getImparte());
-            stm.setInt(5, curso.getEstatusCupo());
-            stm.setString(6, curso.getEstatusCurso());
-            stm.setString(7, curso.getModalidad());
-            stm.setString(8, curso.getDireccion());
-            stm.setString(9, curso.getCorreoSeguimiento());
-            stm.setString(10, curso.getTipo());
-            stm.setString(11, curso.getCurso());
-            stm.setString(12, curso.getLigaTeams());
-            stm.setString(13, curso.getValorCurricular());
-            stm.setInt(14, curso.getIdCurso());
+            stm.setInt(5, curso.getCupo());
+            stm.setInt(6, cupoFinal);
+            stm.setString(7, curso.getEstatusCurso());
+            stm.setString(8, curso.getModalidad());
+            stm.setString(9, curso.getDireccion());
+            stm.setString(10, curso.getCorreoSeguimiento());
+            stm.setString(11, curso.getTipo());
+            stm.setString(12, curso.getCurso());
+            stm.setString(13, curso.getLigaTeams());
+            stm.setString(14, curso.getValorCurricular());
+            stm.setInt(15, curso.getIdCurso());
 
             if (stm.executeUpdate() > 0) {
                 msj = "Curso actualizado con éxito";
