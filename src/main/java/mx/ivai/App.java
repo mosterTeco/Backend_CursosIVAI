@@ -313,6 +313,47 @@ public class App {
         });
 
 
+       
+
+        post("/mandarConstanciaAsistente", (request, response) -> {
+            response.type("application/json");
+        
+            Gson gson = new Gson();
+            JsonObject body = gson.fromJson(request.body(), JsonObject.class);
+            
+            int idCurso = body.get("idCurso").getAsInt();
+            int idRegistro = body.get("idRegistro").getAsInt();
+        
+            // Obtiene la información del curso
+            Cursos curso = Dao.obtenerCurso(idCurso);
+            if (curso == null) {
+                response.status(404);
+                return "Curso no encontrado";
+            }
+        
+            // Obtiene los registros de los asistentes (con su correo, nombre, etc.)
+            Registro registro = Dao.obtenerRegistroAsistente(idCurso,idRegistro);
+            if (registro == null) {
+                response.status(404);
+                return "No hay asistentes registrados para este curso.";
+            }
+        
+                // Obtiene los bytes de la constancia (por ejemplo, una imagen base)
+                byte[] archivoBytes = Dao.obtenerConstancia(idCurso);
+                
+                // Agrega el nombre del asistente sobre la imagen (puedes implementar esta función según tus necesidades)
+                String nombreCompleto = registro.getNombre() + " " + registro.getApellidos();
+                archivoBytes = agregarTextoAPNG(archivoBytes, nombreCompleto);
+                
+                // Envía el correo con la constancia adjunta
+                MailConstancia.inicializarMail(registro, curso, archivoBytes);
+            
+            response.type("text/plain");
+            return "Correos enviados exitosamente";
+        });
+
+        
+
         // Petición para obtener archivo excel de los regitros
         get("/obtenerExcelRegistros/:idCurso", (request, response) -> {
             int idCurso = Integer.parseInt(request.params("idCurso"));
@@ -444,6 +485,15 @@ public class App {
             String jsonEstados = gson.toJson(nombreAsistentes);
 
             return jsonEstados;
+        });
+
+
+        delete("/eliminarRegistro", (request, response) -> {
+            response.type("application/json");
+            String payload = request.body();
+            Registro registro = gson.fromJson(payload, Registro.class);
+            String respuesta = Dao.eliminarRegistro(registro);
+            return respuesta;
         });
 
     }

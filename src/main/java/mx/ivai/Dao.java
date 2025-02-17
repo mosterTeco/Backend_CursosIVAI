@@ -956,10 +956,39 @@ public class Dao {
 
 
 
-
-
-
-
+    public static Registro obtenerRegistroAsistente(Integer idCurso, Integer idRegistro) {
+        Registro registro = new Registro();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = Conexion.getConnection();
+            String query = "SELECT * FROM Registro WHERE Asistencia = 'true' AND IdCurso = ? AND IdRegistro=?";
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, idCurso);
+            ps.setInt(2, idRegistro);
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                registro.setNombre(rs.getString("Nombre"));
+                registro.setApellidos(rs.getString("Apellidos"));
+                registro.setCorreo(rs.getString("Correo"));
+            }
+        } catch (Exception ex) {
+            System.out.println("Error al obtener los registros de asistentes: " + ex.getMessage());
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                System.out.println("Error al cerrar recursos: " + e.getMessage());
+            }
+        }
+        return registro;
+    }
 
     public static byte[] obtenerConstancia(Integer idCurso) {
         byte[] constancia = null;
