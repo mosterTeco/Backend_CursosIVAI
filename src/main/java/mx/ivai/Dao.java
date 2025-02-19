@@ -867,7 +867,7 @@ public class Dao {
         conn = c.getConnection();
 
         try {
-            String sql = "INSERT INTO tipocurso (tipo) values (?)";
+            String sql = "INSERT INTO TIPOCURSO (tipo) values (?)";
 
             stm = conn.prepareStatement(sql);
 
