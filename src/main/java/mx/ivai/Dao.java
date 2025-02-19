@@ -491,7 +491,7 @@ public class Dao {
             stm.setString(3, curso.getHora());
             stm.setString(4, curso.getImparte());
             stm.setInt(5, curso.getCupo());
-            stm.setInt(6, curso.getEstatusCupo());
+            stm.setInt(6, curso.getCupo());
             stm.setString(7, curso.getEstatusCurso());
             stm.setString(8, curso.getModalidad());
             stm.setString(9, curso.getDireccion());
