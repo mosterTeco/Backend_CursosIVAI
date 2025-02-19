@@ -171,7 +171,7 @@ public class Dao {
         Cursos curso = new Cursos();
         conn = c.getConnection();
         try {
-            String query = "SELECT * FROM curso WHERE idCurso = " + idCurso;
+            String query = "SELECT * FROM Curso WHERE idCurso = " + idCurso;
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
 
@@ -223,7 +223,7 @@ public class Dao {
         String msj = "";
         conn = c.getConnection();
         try {
-            String query = "SELECT EstatusCupo FROM curso WHERE idCurso = " + idCurso;
+            String query = "SELECT EstatusCupo FROM Curso WHERE idCurso = " + idCurso;
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
 
@@ -231,7 +231,7 @@ public class Dao {
                 cupoDisponible = rs.getInt("EstatusCupo") - 1;
             }
 
-            query = "UPDATE curso SET EstatusCupo = ? where idCurso = ?";
+            query = "UPDATE Curso SET EstatusCupo = ? where idCurso = ?";
             stm = conn.prepareStatement(query);
             stm.setInt(1, cupoDisponible);
             stm.setInt(2, idCurso);
@@ -689,7 +689,7 @@ public class Dao {
         String msj = "";
         conn = c.getConnection();
         try {
-            String query = "SELECT EstatusCupo FROM curso WHERE idCurso = " + idCurso;
+            String query = "SELECT EstatusCupo FROM Curso WHERE idCurso = " + idCurso;
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
 
@@ -697,7 +697,7 @@ public class Dao {
                 cupoDisponible = rs.getInt("EstatusCupo") + 1;
             }
 
-            query = "UPDATE curso SET EstatusCupo = ? where idCurso = ?";
+            query = "UPDATE Curso SET EstatusCupo = ? where idCurso = ?";
             stm = conn.prepareStatement(query);
             stm.setInt(1, cupoDisponible);
             stm.setInt(2, idCurso);

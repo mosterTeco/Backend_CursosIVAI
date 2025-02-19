@@ -440,6 +440,13 @@ public class App {
             return new Gson().toJson(tipoCursos);
         });
 
+        get("/obtenerCurso/:idCurso", (request, response) -> {
+            int idCurso = Integer.parseInt(request.params("idCurso"));
+            Cursos curso = Dao.obtenerCurso(idCurso);
+            response.type("application/json");
+            return new Gson().toJson(curso);
+        });
+
         post("/eliminarTipoCurso", (request, response) -> {
             response.type("application/json");
             String payload = request.body();
@@ -495,6 +502,8 @@ public class App {
             String respuesta = Dao.eliminarRegistro(registro);
             return respuesta;
         });
+
+
 
     }
 }
