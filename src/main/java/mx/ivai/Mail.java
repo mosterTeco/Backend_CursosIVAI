@@ -35,6 +35,9 @@ public class Mail {
             String htmlContent = "";
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(registro.getCorreo(), true));
             message.setSubject("Registro Curso");
+            message.setContent(htmlContent, "text/html; charset=UTF-8");
+            message.setHeader("Content-Type", "text/html; charset=UTF-8");
+            message.setHeader("Content-Transfer-Encoding", "8bit");
             
             if(curso.getModalidad().equals("Presencial")){
                 htmlContent = "<h2>Apreciado(a) " + registro.getNombre() + " " + registro.getApellidos() + "</h2>"
