@@ -1,7 +1,7 @@
-#CREATE DATABASE dbo;
-#CREATE USER 'IVAI_db'@'localhost' IDENTIFIED BY 'trans_ivai';
-#GRANT ALL PRIVILEGES ON dbo.* TO 'IVAI_db'@'localhost';
-#FLUSH PRIVILEGES;
+CREATE DATABASE dbo;
+CREATE USER 'IVAI_db'@'localhost' IDENTIFIED BY 'trans_ivai';
+GRANT ALL PRIVILEGES ON dbo.* TO 'IVAI_db'@'localhost';
+FLUSH PRIVILEGES;
 use dbo;
 #Atributos con 255 cmabiar a Maxima cantidad de carácteres
 #Registro Cursos
@@ -22,9 +22,9 @@ Tipo VARCHAR(20) NULL,
 Curso VARCHAR(100) NULL,
 LigaTeams VARCHAR(255) NOT NULL,
 ValorCurricular VARCHAR(10) NULL,
+Constancia LONGBLOB,
 PRIMARY KEY (IdCurso)
 );
-delete from curso;
 
 #Registro Estados
 ##DROP TABLE Estados;
@@ -35,7 +35,7 @@ PRIMARY KEY (Estado)
 );
 
 #Registro Tipos de Cursos
-DROP TABLE TIPOCURSO;
+#DROP TABLE TIPOCURSO;
 CREATE TABLE TIPOCURSO(
 Id INT AUTO_INCREMENT,
 Tipo VARCHAR(255),
@@ -61,8 +61,8 @@ Cargo VARCHAR(250) NULL,
 Genero VARCHAR(255) NULL,
 Estado VARCHAR(50) NULL,
 Fecha VARCHAR(200) NULL,
-InfoEventos VARCHAR(5) NULL,
-Interprete VARCHAR(5) NULL,
+InfoEventos VARCHAR(5) DEFAULT FALSE,
+Interprete VARCHAR(5) DEFAULT FALSE,
 Asistencia VARCHAR(5) DEFAULT FALSE,
 PRIMARY KEY (Correo, IdCurso),
 FOREIGN KEY (IdCurso) REFERENCES Curso(IdCurso),
@@ -80,7 +80,7 @@ Rol VARCHAR (1) NULL,
 PRIMARY KEY (IdUsuario,Usuario)
 );
 
-INSERT INTO Usuario ( Usuario, Pass, Nombre, Rol) values ('Angel','1234','Angel Diego', '1');
+INSERT INTO Usuario ( Usuario, Pass, Nombre, Rol) values ('admin','admin','Rafael Martinez', '1');
 
 insert into TIPOCURSO ( Tipo ) values ('Seleccionar Curso');
 insert into TIPOCURSO ( Tipo ) values ('Aviso de Privacidad');
